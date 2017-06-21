@@ -192,8 +192,8 @@ function template_main()
 				<div class="windowbg listing">
 					<div class="bwgrid">
 						<div class="bwcell1 des">
-							<img src="', $topic['first_post']['icon_url'], '" alt="">
-							', $topic['is_posted_in'] ? '<img class="posted" src="' . $settings['images_url'] . '/icons/profile_sm.png" alt="">' : '', '
+							' , !empty($settings['ficons'][$topic['first_post']['icon']]) ? '<span class="' .$settings['ficons'][$topic['first_post']['icon']] . '"></span>' : '<img src="'. $topic['first_post']['icon_url']. '" alt="">' , '
+							', $topic['is_posted_in'] ? '<span class="icon-user"></span>' : '', '
 						</div>
 						<div class="bwcell7', !empty($context['can_quick_mod']) ? '' : ' info_block', '">
 							<div>';
@@ -362,7 +362,10 @@ function template_topic_legend()
 
 	if (empty($context['no_topic_listing']))
 		echo '
-	<div class="box_top less">
+	<div class="sub_bar">
+		<h4 class="subbg">', $txt['f_info'], '</h4>
+	</div>
+	<div class="lefttext menus_box_body">
 		<div class="less">', !empty($modSettings['enableParticipation']) && $context['user']['is_logged'] ? '
 			<span class="icon-user" alt=""></span> ' . $txt['participation_caption'] . '<br>' : '', '
 			'. ($modSettings['pollMode'] == '1' ? '<span class="icon-chart"></span> ' . $txt['poll'] : '') . '<br>
@@ -409,14 +412,17 @@ function template_put_me_aside()
 	if (!$context['no_topic_listing'])
 	{
 		echo '
-		<div class="box_top less">', 
+		<div class="less box_top">',
 			template_button_strip($context['normal_buttons'], 'no'), '
 		</div>';
 	}
 	if (!empty($settings['display_who_viewing']))
 	{
 		echo '
-		<div class="box_top less">';
+		<div class="sub_bar">
+			<h4 class="subbg">', $txt['f_viewing'], '</h4>
+		</div>
+		<div class="less lefttext menus_box_body">';
 		if ($settings['display_who_viewing'] == 1)
 			echo count($context['view_members']), ' ', count($context['view_members']) === 1 ? $txt['who_member'] : $txt['members'];
 		else
@@ -428,5 +434,15 @@ function template_put_me_aside()
 		</div>';
 	}
 	template_topic_legend();
+
+	// anything from mods?
+	if(!empty($settings['messageindex_aside']))
+	{
+		foreach ($settings['messageindex_aside'] as $func)
+		{
+			if(function_exists($func))
+				$func();
+		}
+	}
 }
 ?>

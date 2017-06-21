@@ -77,6 +77,31 @@ function template_init()
 
 	$settings['f_personal_menu'] = array();
 	$settings['f_mobile_menu'] = array('template_menu_mobile', 'template_menu_personal');
+	
+	// theme icons
+	$settings['ficons'] = array(
+		'xx' => 'icon-files-empty',
+		'angry' => 'icon-angry',
+		'cheesy' => 'icon-happy',
+		'clip' => 'icon-attachment',
+		'exclamation' => 'icon-notification',
+		'grin' => 'icon-grin',
+		'lamp' => 'icon-lightbulb-o',
+		'moved' => 'icon-forward',
+		'poll' => 'icon-chart',
+		'question' => 'icon-question',
+		'recycled' => 'icon-refresh',
+		'sad' => 'icon-sad',
+		'smiley' => 'icon-smile',
+		'thumbdown' => 'icon-thumbs-down',
+		'thumbup' => 'icon-thumbs-up',
+		'wink' => 'icon-wink',
+		'wireless' => 'icon-mobile',
+	);
+	// where mods can attach their subtempaltes into the sidebar
+	$settings['messageindex_aside'] = array();
+	$settings['boardindex_aside'] = array();
+	$settings['display_aside'] = array();
 }
 
 /**

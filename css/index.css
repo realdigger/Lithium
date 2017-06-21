@@ -416,12 +416,14 @@ a img {
 	display: inline-block;
 	padding: 2px 7px;
 	border-radius: 3px;
+	border: solid 1px #ddd;
 }
 .expand_pages {
 	font-weight: bold;
 	cursor: pointer;
 }
 .current_page {
+	border: solid 1px #d0d7da;
 	background: #f0f7fa;
 	color: #222;
 	display: inline-block;
@@ -3722,8 +3724,8 @@ h3.title_header {
 	padding: 0rem 0 1rem 0;
 }
 .box_top {
-	padding: 1rem 3rem;
-	background: #f0f0f0;
+	padding: 1.5rem 2rem;
+	background: #ddd;
 }
 .box_top + .box_top {
 	margin-top: 1rem;
@@ -3735,6 +3737,7 @@ h3.title_header {
 	background: #fff;
 	border: solid 2px #ddd;
 }
+.box_top + .box_top, .box_top + .menus_box_body, .menus_box_body + .box_top , .box_top + .sub_bar { margin-top: 0.5rem; }
 
 #message_index_jump_to input, #message_index_jump_to select { 	width: 100%; margin: 1px 0 0 0; }
 #message_index_jump_to .button_submit { margin-top: -10px; position: relative; }
@@ -3793,8 +3796,8 @@ h3.title_header {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-blank:before {
-  content: " ";
+.icon-lightbulb-o:before {
+  content: "\f0eb";
 }
 .icon-arrow-down:before {
   content: "\e90e";
@@ -3816,6 +3819,15 @@ h3.title_header {
 }
 .icon-plus-square:before {
   content: "\e913";
+}
+.icon-square:before {
+  content: "\e93c";
+}
+.icon-thumbs-down:before {
+  content: "\e93d";
+}
+.icon-thumbs-up:before {
+  content: "\e93e";
 }
 .icon-box:before {
   content: "\e902";
@@ -3975,6 +3987,63 @@ h3.title_header {
 }
 .icon-home:before {
   content: "\e93b";
+}
+.icon-files-empty:before {
+  content: "\e93f";
+}
+.icon-mobile:before {
+  content: "\e958";
+}
+.icon-attachment:before {
+  content: "\e9cd";
+}
+.icon-happy:before {
+  content: "\e9df";
+}
+.icon-smile:before {
+  content: "\e9e1";
+}
+.icon-tongue:before {
+  content: "\e9e3";
+}
+.icon-sad:before {
+  content: "\e9e5";
+}
+.icon-wink:before {
+  content: "\e9e7";
+}
+.icon-grin:before {
+  content: "\e9e9";
+}
+.icon-cool:before {
+  content: "\e9eb";
+}
+.icon-angry:before {
+  content: "\e9ed";
+}
+.icon-evil:before {
+  content: "\e9ef";
+}
+.icon-shocked:before {
+  content: "\e9f1";
+}
+.icon-baffled:before {
+  content: "\e9f3";
+}
+.icon-confused:before {
+  content: "\e9f5";
+}
+.icon-neutral:before {
+  content: "\e9f7";
+}
+.icon-wondering:before {
+  content: "\e9fb";
+}
+.icon-notification:before {
+  content: "\ea08";
+}
+.icon-question:before {
+  content: "\ea09";
 }
 
 .icon-size80 { font-size: 80%; }

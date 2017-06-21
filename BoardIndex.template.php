@@ -417,7 +417,15 @@ function template_put_me_aside ()
 		if(function_exists($func))
 			$func();
 	}
-
+	// anything from mods?
+	if(!empty($settings['boardindex_aside']))
+	{
+		foreach ($settings['messageindex_aside'] as $func)
+		{
+			if(function_exists($func))
+				$func();
+		}
+	}
 }
 
 
