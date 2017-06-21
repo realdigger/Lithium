@@ -16,7 +16,12 @@
 		padding-left: 0 !important;
 	}
 }
-
+/* all devices over 1400px 
+------------------------------------------------------- */
+@media only screen and (min-width: 1400px)
+{
+	.fwidth { width: 1200px; }
+}
 /* assumed touch devices over 680px
 ------------------------------------------------------- */
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) and (min-width: 881px),
@@ -27,14 +32,9 @@ only screen and (min-device-pixel-ratio: 1.5) and (min-width: 881px)
 	h1 { text-align: left !important; width: auto; float: left; }
 	.bwfloatright { float: right; text-align: right; display: block; clear: right; margin-top: 0;}
 	.bwcentertext { text-align: center; display: block; clear: both; margin-top: 0;}
-	.fwidth { width: 80%; margin: 0 auto; }
+	.fwidth { width: 90%; margin: 0 auto; }
 }
 
-/* max for desktop
-------------------------------------------------------- */
-@media only screen and (max-width: 1199px) {
-	.fwidth { width: 80%; margin: 0 auto; }
-}
 
 /* assumed touch devices up to 880px
 ------------------------------------------------------- */

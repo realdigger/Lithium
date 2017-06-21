@@ -21,9 +21,9 @@ function template_main()
 	if ($context['becomesUnapproved'])
 	{
 		echo '
-			<div class="noticebox">
-				', $txt['post_becomesUnapproved'], '
-			</div>';
+	<div class="noticebox">
+		', $txt['post_becomesUnapproved'], '
+	</div>';
 	}
 
 	if (!empty($context['boards']) && (!empty($options['show_children']) || $context['start'] == 0))
@@ -103,6 +103,8 @@ function template_main()
 			</div>
 		</div>';
 		}
+		echo '
+	</div>';
 	}
 	// They can only mark read if they are logged in and it's enabled!
 	if (!$context['user']['is_logged'])
@@ -113,25 +115,25 @@ function template_main()
 		if ($context['description'] != '' || !empty($context['moderators']))
 		{
 			echo '
-		<h3 class="title_header clear">', $context['name'], '</h3>
-		<div class="description">';
+	<h3 class="title_header clear">', $context['name'], '</h3>
+	<div class="description">';
 			if ($context['description'] != '')
 				echo '
-			', $context['description'], '&nbsp;';
+		', $context['description'], '&nbsp;';
 
 			if (!empty($context['moderators']))
 				echo '
 			', count($context['moderators']) === 1 ? $txt['moderator'] : $txt['moderators'], ': ', implode(', ', $context['link_moderators']), '.';
 
 			echo '
-		</div>';
+	</div>';
 		}
 		
-		echo '
-		<div class="pagesection clear">
-			<a href="#bot" class="topbottom floatleft"><span class="icon-up icon-180"></span></a>
-			<div class="pagelinks">', $context['page_index'], '</div>
-		</div>
+		if (!empty($context['topics']))
+			echo '
+	<div class="pagesection clear">
+		<a href="#bot" class="topbottom floatleft"><span class="icon-up icon-180"></span></a>
+		<div class="pagelinks">', $context['page_index'], '</div>
 	</div>';
 
 		// If Quick Moderation is enabled start the form.
@@ -165,7 +167,7 @@ function template_main()
 		// No topics.... just say, "sorry bub".
 		else
 			echo '
-					<h3 class="titlebg">', $txt['topic_alert_none'], '</h3>';
+					<div class="bwcell16"><span class="icon-cancel"></span>&nbsp; ', $txt['topic_alert_none'],'</div>';
 
 		echo '
 				</div>
@@ -219,7 +221,7 @@ function template_main()
 								<div class="message_index_title">
 									', $topic['new'] && $context['user']['is_logged'] ? '<a href="' . $topic['new_href'] . '" id="newicon' . $topic['first_post']['id'] . '"><span class="new_posts">' . $txt['new'] . '</span></a>' : '', '
 									<span class="preview', $topic['is_sticky'] ? ' bold_text' : '', '" title="', $topic[(empty($modSettings['message_index_preview_first']) ? 'last_post' : 'first_post')]['preview'], '">
-										<span id="msg_', $topic['first_post']['id'], '">', $topic['first_post']['link'], (!$topic['approved'] ? '&nbsp;<em>(' . $txt['awaiting_approval'] . ')</em>' : ''), '</span>
+										<span id="msg_', $topic['first_post']['id'], '"><b>', $topic['first_post']['link'],'</b>', (!$topic['approved'] ? '&nbsp;<em>(' . $txt['awaiting_approval'] . ')</em>' : ''), '</span>
 									</span>
 								</div>
 								<div class="floatleft">', $txt['started_by'], ' ', $topic['first_post']['member']['link'], '</div>
@@ -311,7 +313,8 @@ function template_main()
 		<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '">
 	</form>';
 
-		echo '
+		if (!empty($context['topics']))
+			echo '
 	<div>
 		<a href="#frame" class="topbottom floatleft" id="bot"><span class="icon-up"></span></a>
 		<div class="pagelinks floatleft">', $context['page_index'], '</div>
@@ -354,20 +357,22 @@ function template_topic_legend()
 
 	echo '
 	<div class="box_top less">
-		<div>
-			<p id="message_index_jump_to">&nbsp;</p>';
+		<div id="message_index_jump_to"></div>
+	</div>';
 
 	if (empty($context['no_topic_listing']))
 		echo '
-			<p class="less">', !empty($modSettings['enableParticipation']) && $context['user']['is_logged'] ? '
-				<span class="icon-user" alt=""></span> ' . $txt['participation_caption'] . '<br>' : '', '
-				'. ($modSettings['pollMode'] == '1' ? '<span class="icon-chart"></span> ' . $txt['poll'] : '') . '<br>
-				<span class="icon-forward"></span> ' . $txt['moved_topic'] . '<br>
-			</p>
-			<p class="less">
-				<span class="icon-cancel"></span> ' . $txt['locked_topic'] . '<br>
-				<span class="icon-pin"></span> ' . $txt['sticky_topic'] . '<br>
-			</p>';
+	<div class="box_top less">
+		<div class="less">', !empty($modSettings['enableParticipation']) && $context['user']['is_logged'] ? '
+			<span class="icon-user" alt=""></span> ' . $txt['participation_caption'] . '<br>' : '', '
+			'. ($modSettings['pollMode'] == '1' ? '<span class="icon-chart"></span> ' . $txt['poll'] : '') . '<br>
+			<span class="icon-forward"></span> ' . $txt['moved_topic'] . '<br>
+		</div>
+		<div class="less">
+			<span class="icon-cancel"></span> ' . $txt['locked_topic'] . '<br>
+			<span class="icon-pin"></span> ' . $txt['sticky_topic'] . '<br>
+		</div>
+	</div>';
 
 	if (!empty($context['jump_to']))
 		echo '
@@ -375,13 +380,13 @@ function template_topic_legend()
 				if (typeof(window.XMLHttpRequest) != "undefined")
 					aJumpTo[aJumpTo.length] = new JumpTo({
 						sContainerId: "message_index_jump_to",
-						sJumpToTemplate: "<label class=\"smalltext jump_to\" for=\"%select_id%\">', $context['jump_to']['label'], '<" + "/label> %dropdown_list%",
+						sJumpToTemplate: "%dropdown_list%",
 						iCurBoardId: ', $context['current_board'], ',
 						iCurBoardChildLevel: ', $context['jump_to']['child_level'], ',
 						sCurBoardName: "', $context['jump_to']['board_name'], '",
-						sBoardChildLevelIndicator: "==",
-						sBoardPrefix: "=> ",
-						sCatSeparator: "-----------------------------",
+						sBoardChildLevelIndicator: "..",
+						sBoardPrefix: "",
+						sCatSeparator: "****************",
 						sCatPrefix: "",
 						sGoButtonLabel: "', $txt['quick_mod_go'], '"
 					});
@@ -397,7 +402,6 @@ function template_put_me_aside()
 {
 	global $context, $settings, $txt;
 
-	echo '<br class="clear">';
 	// They can only mark read if they are logged in and it's enabled!
 	if (!$context['user']['is_logged'])
 		unset($context['normal_buttons']['markread']);

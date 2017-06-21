@@ -28,6 +28,10 @@ function fPop_slide(what, imag)
 	$(imag).toggleClass('icon-up');
 	$(what).slideToggle();
 }
+function fPop_slide_only(what)
+{
+	$(what).slideToggle();
+}
 
 
 // The purpose of this code is to fix the height of overflow: auto blocks, because some browsers can't figure it out for themselves.

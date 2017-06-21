@@ -363,6 +363,7 @@ function ftemplate_ic_block_stats()
 function template_ic_block_online()
 {
 	global $context, $scripturl, $txt, $modSettings, $settings;
+	
 	// "Users online" - in order of activity.
 	echo '
 			<div class="sub_bar">

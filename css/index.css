@@ -21,16 +21,25 @@ input, button, select, textarea, textarea.editor {
 }
 /* The following is necessary. */
 textarea, textarea.editor {
-	font-size: 1em;
+	font-size: 1.2em;
+	padding: 1rem 2rem;
+	font-weight: normal;
+	line-height: 1.5rem;
 }
 .sceditor-container textarea, .sceditor-container textarea:focus  {
 	box-shadow: none;
+	padding: 1rem 2rem;
+	font-weight: normal;
+	line-height: 1.5rem;
 }
 #quick_edit_body_container textarea,
 .move_topic textarea,
 dd textarea {
 	width: 100%;
 	min-height: 100px;
+	padding: 1rem 2rem;
+	font-weight: normal;
+	line-height: 1.5rem;
 }
 /* Apply the font only to these elements. */
 input, button, select {
@@ -405,7 +414,7 @@ a img {
 	color: #666;
 	background: #eee;
 	display: inline-block;
-	padding: 2px 10px;
+	padding: 2px 7px;
 	border-radius: 3px;
 }
 .expand_pages {
@@ -425,16 +434,15 @@ a img {
 }
 /* Go up and go down links. */
 .topbottom {
-	background: #eee;
+	background: #fff;
 	display: inline-block;
-	padding: 2px 10px;
+	padding: 2px 7px;
 	border-radius: 3px;
 	cursor: pointer;
 	margin: 8px 4px 0 0;
 }
 .topbottom:hover {
-	background: #666;
-	color: #fff;
+	background: #eee;
 }
 
 /* Posts and personal messages displayed throughout the forum. */
@@ -747,23 +755,62 @@ img.sort, .sort {
 
 /* Styles for the standard button lists.
 ------------------------------------------------------- */
-.buttonlist, .buttonrow {
+.buttonlist, .buttonlist li, .buttonlist > li.fullw ul li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: block;
+}
+.buttonlist {
 	z-index: 100;
 	margin: 5px 0 5px 0;
+	overflow: hidden;
+}
+.buttonlist > li {
+	float: left;
+	width: 49%;
+	margin-right: 1%;
 }
 .button {
-	display: inline-block;
+	display: block;
 	text-transform: uppercase;
 	cursor: pointer;
 	border-radius: 3px;
 	padding: 0rem 1rem;
-	margin: 0 5px 5px 0;
 	overflow: visible;
 	color: #fff;
 	font-size: 70%;
 	height: 2.2em;
 	line-height: 2.2em;
 	background: #578;
+	margin: 0 0 4px 0;
+}
+.buttonlist > li.fullw {
+	width: 99%;
+}
+.buttonlist > li.fullw ul li {
+	float: none !important;
+	width: 100% !important;
+}
+ul.subbuttons {
+	display: block;
+	padding: 0 !important;
+	clear: both;
+	overflow: hidden;
+}
+ul.subbuttons a {
+	display: block;
+	padding: 1rem;
+	border-bottom: solid 2px #689;
+	color: #888;
+	font-size: 90%;
+	margin-bottom: 1px;
+}
+ul.subbuttons li:last-of-type a {
+	border-bottom: none;
+}
+ul.subbuttons a:hover {
+	color: #d72;
 }
 /* Keep a consistent size when wrapped in pagesection. */
 .pagesection .button {
@@ -777,33 +824,22 @@ img.sort, .sort {
 }
 /* the active one */
 .button.active {
-	background: #557ea0;
+	background: #134;
 	color: #fff;
 	font-weight: bold;
-	border: 1px solid #558080;
-	text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
 .button.active:hover {
-	color: #ffc187;
-	background: #557ea0;
 }
 .button.last {
-	margin-top: 9px;
 }
 /* In a .buttonrow, the buttons are joined together */
 .buttonrow {
-	margin-left: 5px;
 }
 .buttonrow .button {
-	display: table-cell;
 }
 .buttonrow .button:not(:first-child) {
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
 }
 .buttonrow .button:not(:last-child) {
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
 }
 
 /* Styles for the general looks of the theme.
@@ -2455,15 +2491,6 @@ span.postby {
 #topic_icons .floatleft img:first-child {
 	padding: 0 2px;
 }
-#message_index_jump_to_select {
-	font-size: 1em;
-	padding: 0;
-}
-/* This is a bit of a kludge too */
-#message_index_jump_to .button_submit {
-	margin-top: 3px;
-	padding: 1px 6px;
-}
 
 /* Display */
 /* Poll question */
@@ -2877,7 +2904,8 @@ div.cat_bar {
 	line-height: 1.5rem;
 	font-weight: normal;
 	padding: 1rem 2rem;
-	border-top: solid 2px #fff;
+	background: #fefefe;
+	border: solid 2px #eee;
 }
 h3.catbg {
 	overflow: hidden;
@@ -2908,6 +2936,7 @@ h3.catbg .icon {
 	border: solid 1px #fff;
 	border-right: none;
 	border-left: none;
+	padding: 1rem 2rem;
 }
 /* TitleBar & SubBar */
 .title_bar {
@@ -3347,7 +3376,7 @@ body {
 font-family: 'Segoe UI', sans-serif;
   font-size: 1.5rem;
   line-height: 2rem;
-  color: #fff;
+  color: #333;
   background-color: #fff;
 }
 a { color: #606566;  text-decoration: none; }
@@ -3441,7 +3470,7 @@ input.input:focus {
 	opacity: 1;
 }
 
-.fwidth { width: 1200px; margin: 0 auto; }
+.fwidth { width: 90%; margin: 0 auto; }
 #fhead_menu {
 	background: #000;
 	color: #eee;
@@ -3581,7 +3610,7 @@ h3.title_header {
 .bwcol { display: table-cell; vertical-align: top; }
 
 .gutter2 { padding: 2rem 0 0 4rem;}
-
+.bwfloatright { float: right; }
 
 /* Animation classes 
 ------------------------------------------------------- */
@@ -3683,6 +3712,7 @@ h3.title_header {
 }
 .less {
 	color: #888;
+	font-size: 95%;
 }
 .less_color, .less_color a {
 	color: #406d91;
@@ -3692,16 +3722,22 @@ h3.title_header {
 	padding: 0rem 0 1rem 0;
 }
 .box_top {
-	padding: 2rem 3rem;
+	padding: 1rem 3rem;
 	background: #f0f0f0;
+}
+.box_top + .box_top {
+	margin-top: 1rem;
 }
 .menus_box_body {
-	background: #f0f0f0;
 	padding: 1rem 2rem 3rem 2rem !important;
 	margin: 0 0 1px 0;
-	border-top: solid 1px #fff;
 	overflow: hidden;
+	background: #fff;
+	border: solid 2px #ddd;
 }
+
+#message_index_jump_to input, #message_index_jump_to select { 	width: 100%; margin: 1px 0 0 0; }
+#message_index_jump_to .button_submit { margin-top: -10px; position: relative; }
 
 #main_menu {
 	background: #192123;

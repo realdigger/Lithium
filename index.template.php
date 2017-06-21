@@ -205,7 +205,7 @@ function template_body_above()
 				'title' => $txt['pm_short'] . (!empty($context['user']['unread_messages']) ? ' <span class="amt">' . $context['user']['unread_messages'] . '</span>' : ''), 
 				'href' => 'action=pm',
 				'body' => '
-			<a href="' . $scripturl . '?action=pm;u=' . $context['user']['id'] . '"><img src="' . $settings['images_url'] . '/f_pm.png" alt="" class="avatar_80 floatleft" style="margin-right: 4rem;" /></a>
+			<a href="' . $scripturl . '?action=pm;u=' . $context['user']['id'] . '"><img src="' . $settings['images_url'] . '/f_pm.png" alt="" class="avatar_40 floatleft" style="margin-right: 4rem;" /></a>
 			<div class="floatleft">
 				<a href="' . $scripturl . '?action=pm;sa=send"><span class="icon-bubble icon-size80"></span>&nbsp;' . $txt['send_message'] . '</a> <br> 
 				<a href="' . $scripturl . '?action=pm;sa=settings"><span class="icon-cog icon-size80"></span>&nbsp;' . $txt['settings'] . '</a>  
@@ -219,7 +219,7 @@ function template_body_above()
 				'title' => $txt['alerts'] . (!empty($context['user']['alerts']) ? ' <span class="amt">' . $context['user']['alerts'] . '</span>' : ''),
 				'href' => 'action=profile;area=showalerts;u='. $context['user']['id'],
 				'body' => '
-			<a href="' . $scripturl . '?action=profile;area=showalerts"><img src="' . $settings['images_url'] . '/f_alert.png" alt="" class="avatar_80 floatleft" style="margin-right: 4rem;" /></a>
+			<a href="' . $scripturl . '?action=profile;area=showalerts"><img src="' . $settings['images_url'] . '/f_alert.png" alt="" class="avatar_40 floatleft" style="margin-right: 4rem;" /></a>
 			<div class="floatleft">
 				<a href="' . $scripturl . '?action=profile;area=showalerts"><span class="icon-tag icon-size80"></span>&nbsp;' . $txt['alerts'] . '</a><br>
 				<a href="' . $scripturl . '?action=profile;area=notification;sa=alerts"><span class="icon-cog icon-size80"></span>&nbsp;' . $txt['settings'] . '</a>  
@@ -404,7 +404,7 @@ function template_body_above()
 
 function template_menu_personal()
 {
-	global $context, $settings, $scripturl;
+	global $context, $settings, $scripturl, $txt;
 
 	// If the user is logged in, display some things that might be useful.
 	if ($context['user']['is_logged'])
@@ -661,29 +661,27 @@ function template_button_strip($button_strip, $direction = '', $strip_options = 
 				$value['id'] = $key;
 
 			$button = '
-				<a class="button button_strip_' . $key . (!empty($value['active']) ? ' active' : '') . (isset($value['class']) ? ' ' . $value['class'] : '') . '" ' . (!empty($value['url']) ? 'href="' . $value['url'] . '"' : '') . ' ' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . '>' . $txt[$value['text']] . '</a>';
+				<li' . (!empty($value['sub_buttons']) ? ' class="fullw"' : '')  . '><a class="button button_strip_' . $key . (!empty($value['active']) ? ' active' : '') . (isset($value['class']) ? ' ' . $value['class'] : '') . '" href="' . (!empty($value['url']) ? $value['url'] : '#') . '" ' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . (!empty($value['sub_buttons']) ? ' onclick="fPop_slide_only(\'#qsub_'.$key.'\'); return false;"' : ''). '>
+					' . $txt[$value['text']] . '
+				</a></li>';
 
 			if (!empty($value['sub_buttons']))
 			{
 				$button .= '
-					<div class="top_menu dropmenu ' . $key . '_dropdown">
-						<div class="viewport">
-							<div class="overview">';
+					<ul class="subbuttons" id="qsub_' . $key .'" style="display: none;">';
 				foreach ($value['sub_buttons'] as $element)
 				{
 					if (isset($element['test']) && empty($context[$element['test']]))
 						continue;
 
 					$button .= '
-								<a href="' . $element['url'] . '"><strong>' . $txt[$element['text']] . '</strong>';
+						<li><a href="' . $element['url'] . '"><strong>' . $txt[$element['text']] . '</strong>';
 					if (isset($txt[$element['text'] . '_desc']))
 						$button .= '<br /><span>' . $txt[$element['text'] . '_desc'] . '</span>';
-					$button .= '</a>';
+					$button .= '</a></li>';
 				}
 				$button .= '
-							</div>
-						</div>
-					</div>';
+					</ul>';
 			}
 
 			$buttons[] = $button;
@@ -695,9 +693,9 @@ function template_button_strip($button_strip, $direction = '', $strip_options = 
 		return;
 
 	echo '
-		<div class="buttonlist', !empty($direction) ? ' float' . $direction : '', '"', (empty($buttons) ? ' style="display: none;"' : ''), (!empty($strip_options['id']) ? ' id="' . $strip_options['id'] . '"' : ''), '>
+		<ul class="reset buttonlist', !empty($direction) ? ' float' . $direction : '', '"', (empty($buttons) ? ' style="display: none;"' : ''), (!empty($strip_options['id']) ? ' id="' . $strip_options['id'] . '"' : ''), '>
 			',implode('', $buttons), '
-		</div>';
+		</ul>';
 }
 
 /**
