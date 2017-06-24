@@ -188,10 +188,10 @@ a span.new_posts:hover {
 
 /* Default font sizes: small (8pt), normal (10pt), and large (14pt). */
 .smalltext, tr.smalltext th {
-	font-size: 0.9em;
+	font-size: 1rem;
 }
 .largetext {
-	font-size: 1.4em;
+	font-size: 2.5rem;
 }
 h3.largetext {
 	font-size: large;
@@ -917,7 +917,17 @@ h1#forumtitle {
 	font-size: 2em;
 	font-family: 'Questrial', sans-serif;
 }
-
+h2.subbg {
+	line-height: 3rem;
+	font-size: 3rem;
+	font-family: 'Questrial', sans-serif;
+	padding-left: 0;
+}
+small {
+	font-weight: normal;
+	font-size: 1.2rem;
+	line-height: 1.3rem;
+}
 /* the posting icons */
 #postbuttons_upper ul li a span {
 	line-height: 19px;
@@ -1672,24 +1682,29 @@ tr.windowbg td, tr.windowbg2 td, .table_grid tr td {
 	margin: auto;
 }
 .errorbox::before, .noticebox::before, .infobox::before {
-	width: 16px;
-	height: 16px;
-	background: url(../images/generic_icons.png) no-repeat -57px -83px;
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  content: "\ea08";
+	
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 	left: 10px;
-	content: '';
 	position: absolute;
-	top: 50%;
-	margin-top: -8px;
+	margin-top: 0.4rem;
 }
 .errorbox, .noticebox, .infobox {
-	padding: 7px 10px 7px 35px;
-	margin-bottom: 12px;
+	padding: 1rem 2rem 1rem 4rem;
+	margin-bottom: 1rem;
 	position: relative;
 }
 .errorbox {
-	background-color: #fee;
-	border-top: 2px solid #c34;
-	border-bottom: 2px solid #c34;
+	background: #fee;
 }
 .errorbox h3 {
 	padding: 0;
@@ -1698,7 +1713,7 @@ tr.windowbg td, tr.windowbg2 td, .table_grid tr td {
 	text-decoration: underline;
 }
 .errorbox p {
-	margin: 12px 0 0 0;
+	margin: 1rem 0 0 0;
 }
 .errorbox p.alert {
 	padding: 0;
@@ -1723,14 +1738,10 @@ tr.windowbg td, tr.windowbg2 td, .table_grid tr td {
 .noticebox {
 	color: #666;
 	background: #fff6ca;
-	border-top: 1px solid #ffd324;
-	border-bottom: 1px solid #ffd324;
 }
 .infobox {
 	color: #222;
 	background: #cfc;
-	border-top: 1px solid green;
-	border-bottom: 1px solid green;
 }
 .descbox {
 	padding: 7px 10px 7px 10px;
@@ -2704,8 +2715,8 @@ div#pollmoderation {
 	padding: 2px 0 0 4px;
 }
 .inner {
-	padding: 7px 8px 2px 2px;
-	margin: 0;
+	padding: 1rem 0 0 0;
+	margin: 1rem 0 0 0;
 	border-top: 1px solid #bfbfbf;
 	box-shadow: 0 1px 0 #fff inset;
 	min-height: 85px;
@@ -2738,7 +2749,8 @@ img.smiley {
 }
 /* Next and previous topic links */
 .nextlinks {
-	text-transform: capitalize;
+	text-transform: uppercase;
+	font-size: 80%;
 }
 /* Styles for the quick reply area. */
 #quickreplybox {
@@ -2958,6 +2970,7 @@ h3.titlebg, h4.titlebg, .titlebg, h3.subbg, h4.subbg, .subbg {
 	font-size: 1.2rem;
 	clear: both;
 }
+
 .titlebg a, .subbg a {
 	color: #666;
 	text-decoration: none;
@@ -3384,8 +3397,6 @@ font-family: 'Segoe UI', sans-serif;
 a { color: #606566;  text-decoration: none; }
 a:hover { color: #0a0; text-decoration: none; }
 hr { border: 0; border-bottom: 1px solid #cfd8dc; }
-h1,h2 { 20px; }
-h4,h5,h6 { font-size: 16px;  }
 
 /* a general table class 
 ------------------------------------------------------- */
@@ -3811,6 +3822,12 @@ h3.title_header {
 .icon-arrow-up:before {
   content: "\e911";
 }
+.icon-chevron-down:before {
+  content: "\e940";
+}
+.icon-chevron-up:before {
+  content: "\e941";
+}
 .icon-menu:before {
   content: "\e905";
 }
@@ -4045,6 +4062,7 @@ h3.title_header {
 .icon-question:before {
   content: "\ea09";
 }
+
 
 .icon-size80 { font-size: 80%; }
 .icon-size150 { font-size: 150%; }

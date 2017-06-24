@@ -10,6 +10,49 @@
  * @version 2.1 Beta 3
  */
 
+function template_put_me_aside()
+{
+	global $context, $txt, $settings;
+
+	echo '
+			<div class="sub_bar">
+				<h4 class="subbg">', $txt['f_info'], '</h4>
+			</div>
+			<div class="less menus_box_body">
+				', ($context['is_locked']) ? ' <span class="icon-lock"></span>' : '', ($context['is_sticky']) ? ' <span class="icon-pin"></span>' : '', '
+					',$txt['started_by'], ' ', $context['topic_poster_name'], '<br>', $context['topic_started_time'], '
+					<hr><span class="nextlinks">', $context['previous_next'], '</span>
+			</div>';
+
+	// Moderation buttons
+	echo '
+			<div style="overflow: hidden;">
+				', template_button_strip($context['normal_buttons'], ''), '
+			</div>
+			<div style="overflow: hidden;">
+				', template_button_strip($context['mod_buttons'], '', array('id' => 'moderationbuttons_strip')), '
+			</div>';
+
+	if (!empty($settings['display_who_viewing']))
+	{
+		echo '
+		<div class="sub_bar">
+			<h4 class="subbg">', $txt['f_viewing'], '</h4>
+		</div>
+		<div class="less lefttext menus_box_body">';
+
+		// Show just numbers...?
+		if ($settings['display_who_viewing'] == 1)
+				echo count($context['view_members']), ' ', count($context['view_members']) == 1 ? $txt['who_member'] : $txt['members'];
+		// Or show the actual people viewing the topic?
+		else
+			echo empty($context['view_members_list']) ? '0 ' . $txt['members'] : implode(', ', $context['view_members_list']) . ((empty($context['view_num_hidden']) || $context['can_moderate_forum']) ? '' : ' (+ ' . $context['view_num_hidden'] . ' ' . $txt['hidden'] . ')');
+
+		// Now show how many guests are here too.
+		echo $txt['who_and'], $context['view_num_guests'], ' ', $context['view_num_guests'] == 1 ? $txt['guest'] : $txt['guests'], $txt['who_viewing_topic'], '
+		</div>';
+	}
+}
 /**
  * This tempate handles displaying a topic
  */
@@ -37,34 +80,7 @@ function template_main()
 
 	// Show new topic info here?
 	echo '
-		<div id="display_head" class="information">
-			<h2 class="display_title"><span id="top_subject">', $context['subject'], '</span>', ($context['is_locked']) ? ' <span class="generic_icons lock"></span>' : '', ($context['is_sticky']) ? ' <span class="generic_icons sticky"></span>' : '', '</h2>
-			<p>',$txt['started_by'], ' ', $context['topic_poster_name'], ', ', $context['topic_started_time'], '</p>';
-
-	// Next - Prev
-	echo '
-		<span class="nextlinks floatright">', $context['previous_next'], '</span>';
-
-	if (!empty($settings['display_who_viewing']))
-	{
-		echo '
-				<p>';
-
-		// Show just numbers...?
-		if ($settings['display_who_viewing'] == 1)
-				echo count($context['view_members']), ' ', count($context['view_members']) == 1 ? $txt['who_member'] : $txt['members'];
-		// Or show the actual people viewing the topic?
-		else
-			echo empty($context['view_members_list']) ? '0 ' . $txt['members'] : implode(', ', $context['view_members_list']) . ((empty($context['view_num_hidden']) || $context['can_moderate_forum']) ? '' : ' (+ ' . $context['view_num_hidden'] . ' ' . $txt['hidden'] . ')');
-
-		// Now show how many guests are here too.
-		echo $txt['who_and'], $context['view_num_guests'], ' ', $context['view_num_guests'] == 1 ? $txt['guest'] : $txt['guests'], $txt['who_viewing_topic'], '
-				</p>';
-	}
-
-	// Show the anchor for the top and for the first message. If the first message is new, say so.
-	echo '
-		</div>
+			<h2 class="subbg">', $context['subject'], '</h2>
 			<a id="msg', $context['first_message'], '"></a>', $context['first_new_message'] ? '<a id="new"></a>' : '';
 
 	// Is this topic also a poll?
@@ -74,7 +90,7 @@ function template_main()
 			<div id="poll">
 				<div class="cat_bar">
 					<h3 class="catbg">
-						<span class="generic_icons poll"></span>', $context['poll']['is_locked'] ? '<span class="generic_icons lock"></span>' : '', ' ', $context['poll']['question'], '
+						<span class="icon-chart"></span>', $context['poll']['is_locked'] ? '<span class="icon-lock"></span>' : '', ' ', $context['poll']['question'], '
 					</h3>
 				</div>
 				<div class="windowbg noup">
@@ -107,7 +123,7 @@ function template_main()
 
 			if ($context['allow_results_view'])
 				echo '
-						<p><strong>', $txt['poll_total_voters'], ':</strong> ', $context['poll']['total_votes'], '</p>';
+					<p><strong>', $txt['poll_total_voters'], ':</strong> ', $context['poll']['total_votes'], '</p>';
 		}
 		// They are allowed to vote! Go to it!
 		else
@@ -143,14 +159,15 @@ function template_main()
 						<p><strong>', ($context['poll']['is_expired'] ? $txt['poll_expired_on'] : $txt['poll_expires_on']), ':</strong> ', $context['poll']['expire_time'], '</p>';
 
 		echo '
+						</div>
 					</div>
 				</div>
-			</div>
-			<div id="pollmoderation">';
+				<div id="pollmoderation">';
 
-		template_button_strip($context['poll_buttons']);
+		template_button_strip($context['poll_buttons'], 'right');
 
 		echo '
+				</div>
 			</div>';
 	}
 
@@ -177,7 +194,7 @@ function template_main()
 				echo ' <a href="' . $event['export_href'] . '"><span class="generic_icons calendar_export" title="', $txt['calendar_export'], '"></span></a>';
 
 			echo '
-						<br>';
+					<br>';
 
 			if (!empty($event['allday']))
 			{
@@ -227,18 +244,10 @@ function template_main()
 	// Show the page index... "Pages: [1]".
 	echo '
 			<div class="pagesection top">
-				', template_button_strip($context['normal_buttons'], 'right'), '
-				', $context['menu_separator'], '<a href="#bot" class="topbottom floatleft">', $txt['go_down'], '</a>
+				<a href="#bot" class="topbottom floatleft"><span class="icon-chevron-down"></span></a>
 				<div class="pagelinks floatleft">
 					', $context['page_index'], '
 				</div>
-			</div>';
-
-	// Mobile action - moderation buttons (top)
-	echo '
-			<div class="mobile_buttons floatright">
-				<a class="button mobile_act">', $txt['mobile_action'], '</a>
-				', ($context['can_moderate_forum'] || $context['user']['is_mod']) ? '<a class="button mobile_mod">' . $txt['mobile_moderation'] . '</a>' : '', '
 			</div>';
 
 	// Show the topic information - icon, subject, etc.
@@ -259,62 +268,22 @@ function template_main()
 				</form>
 			</div>';
 
-	// Mobile action - moderation buttons (bottom)
-	echo '
-			<div class="mobile_buttons floatright">
-				<a class="button mobile_act">', $txt['mobile_action'], '</a>
-				', ($context['can_moderate_forum'] || $context['user']['is_mod']) ? '<a class="button mobile_mod">' . $txt['mobile_moderation'] . '</a>' : '', '
-			</div>';
-
 	// Show the page index... "Pages: [1]".
 	echo '
 			<div class="pagesection">
-				', template_button_strip($context['normal_buttons'], 'right'), '
-				', $context['menu_separator'], '<a href="#main_content_section" class="topbottom floatleft" id="bot">', $txt['go_up'], '</a>
+				<a href="#frame" class="topbottom floatleft" id="bot"><span class="icon-chevron-up"></span></a>
 				<div class="pagelinks floatleft">
 					', $context['page_index'], '
 				</div>
-			</div>';
+			</div>
+			<hr>';
 
 	// Show the lower breadcrumbs.
 	theme_linktree();
 
-	// Moderation buttons
-	echo '
-			<div id="moderationbuttons">
-				', template_button_strip($context['mod_buttons'], 'bottom', array('id' => 'moderationbuttons_strip')), '
-			</div>';
-
-	// Show the jumpto box, or actually...let Javascript do it.
-	echo '
-			<div id="display_jump_to">&nbsp;</div>';
-
 	// Show quickreply
 	if ($context['can_reply'])
-	template_quickreply();
-
-	// User action pop on mobile screen (or actually small screen), this uses responsive css does not check mobile device.
-	echo '
-			<div id="mobile_action" class="popup_container">
-				<div class="popup_window description">
-					<div class="popup_heading">', $txt['mobile_action'], '
-					<a href="javascript:void(0);" class="generic_icons hide_popup"></a></div>
-					', template_button_strip($context['normal_buttons']), '
-				</div>
-			</div>';
-
-	// Show the moderation button & pop only if user can moderate
-	if ($context['can_moderate_forum'] || $context['user']['is_mod'])
-		echo '
-			<div id="mobile_moderation" class="popup_container">
-				<div class="popup_window description">
-					<div class="popup_heading">', $txt['mobile_moderation'], '
-					<a href="javascript:void(0);" class="generic_icons hide_popup"></a></div>
-					<div id="moderationbuttons_mobile">
-						', template_button_strip($context['mod_buttons'], 'bottom', array('id' => 'moderationbuttons_strip_mobile')), '
-					</div>
-				</div>
-			</div>';
+		template_quickreply();
 
 		echo '
 				<script>';
@@ -346,33 +315,7 @@ function template_main()
 						sFormId: \'quickModForm\'
 					});';
 
-		// Add it to the mobile button strip as well
-		echo '
-					var oInTopicModerationMobile = new InTopicModeration({
-						sSelf: \'oInTopicModerationMobile\',
-						sCheckboxContainerMask: \'in_topic_mod_check_\',
-						aMessageIds: [\'', implode('\', \'', $context['removableMessageIDs']), '\'],
-						sSessionId: smf_session_id,
-						sSessionVar: smf_session_var,
-						sButtonStrip: \'moderationbuttons_mobile\',
-						sButtonStripDisplay: \'moderationbuttons_strip_mobile\',
-						bUseImageButton: false,
-						bCanRemove: ', $context['can_remove_post'] ? 'true' : 'false', ',
-						sRemoveButtonLabel: \'', $txt['quickmod_delete_selected'], '\',
-						sRemoveButtonImage: \'delete_selected.png\',
-						sRemoveButtonConfirm: \'', $txt['quickmod_confirm'], '\',
-						bCanRestore: ', $context['can_restore_msg'] ? 'true' : 'false', ',
-						sRestoreButtonLabel: \'', $txt['quick_mod_restore'], '\',
-						sRestoreButtonImage: \'restore_selected.png\',
-						sRestoreButtonConfirm: \'', $txt['quickmod_confirm'], '\',
-						bCanSplit: ', $context['can_split'] ? 'true' : 'false', ',
-						sSplitButtonLabel: \'', $txt['quickmod_split_selected'], '\',
-						sSplitButtonImage: \'split_selected.png\',
-						sSplitButtonConfirm: \'', $txt['quickmod_confirm'], '\',
-						sFormId: \'quickModForm\'
-					});';
 	}
-
 	echo '
 					if (\'XMLHttpRequest\' in window)
 					{
@@ -400,19 +343,6 @@ function template_main()
 							sTemplateReasonNormal: ', JavaScriptEscape('%modify_text'), ',
 							sErrorBorderStyle: ', JavaScriptEscape('1px solid red'), ($context['can_reply']) ? ',
 							sFormRemoveAccessKeys: \'postmodify\'' : '', '
-						});
-
-						aJumpTo[aJumpTo.length] = new JumpTo({
-							sContainerId: "display_jump_to",
-							sJumpToTemplate: "<label class=\"smalltext jump_to\" for=\"%select_id%\">', $context['jump_to']['label'], '<" + "/label> %dropdown_list%",
-							iCurBoardId: ', $context['current_board'], ',
-							iCurBoardChildLevel: ', $context['jump_to']['child_level'], ',
-							sCurBoardName: "', $context['jump_to']['board_name'], '",
-							sBoardChildLevelIndicator: "==",
-							sBoardPrefix: "=> ",
-							sCatSeparator: "-----------------------------",
-							sCatPrefix: "",
-							sGoButtonLabel: "', $txt['go'], '"
 						});
 
 						aIconLists[aIconLists.length] = new IconList({
@@ -471,214 +401,49 @@ function template_single_post($message)
 	echo '
 				<div class="', $message['css_class'], '">', $message['id'] != $context['first_message'] ? '
 					<a id="msg' . $message['id'] . '"></a>' . ($message['first_new'] ? '<a id="new"></a>' : '') : '', '
-					<div class="post_wrapper">';
-
-	// Show information about the poster of this message.
-	echo '
-						<div class="poster">';
-
-	// Are there any custom fields above the member name?
-	if (!empty($message['custom_fields']['above_member']))
-	{
-		echo '
-							<div class="custom_fields_above_member">
-								<ul class="nolist">';
-
-		foreach ($message['custom_fields']['above_member'] as $custom)
-			echo '
-									<li class="custom ', $custom['col_name'], '">', $custom['value'], '</li>';
-
-		echo '
-								</ul>
-							</div>';
-	}
-
-	echo '
-									<h4>';
-
-	// Show online and offline buttons?
-	if (!empty($modSettings['onlineEnable']) && !$message['member']['is_guest'])
-		echo '
-								', $context['can_send_pm'] ? '<a href="' . $message['member']['online']['href'] . '" title="' . $message['member']['online']['label'] . '">' : '', '<span class="' . ($message['member']['online']['is_online'] == 1 ? 'on' : 'off') . '" title="' . $message['member']['online']['text'] . '"></span>', $context['can_send_pm'] ? '</a>' : '';
-
-
-	// Show a link to the member's profile.
-	echo '
-								', $message['member']['link'], '
-									</h4>';
-
-	echo '
-							<ul class="user_info">';
-
-
-	// Show the user's avatar.
+					<div class="bwgrid">
+						<div class="bwcell16">';
 	if (!empty($modSettings['show_user_images']) && empty($options['show_no_avatars']) && !empty($message['member']['avatar']['image']))
 		echo '
-								<li class="avatar">
-									<a href="', $message['member']['href'], '">', $message['member']['avatar']['image'], '</a>
-								</li>';
-
-	// Are there any custom fields below the avatar?
-	if (!empty($message['custom_fields']['below_avatar']))
-		foreach ($message['custom_fields']['below_avatar'] as $custom)
-			echo '
-								<li class="custom ', $custom['col_name'], '">', $custom['value'], '</li>';
-
-	// Show the post group icons, but not for guests.
-	if (!$message['member']['is_guest'])
-		echo '
-								<li class="icons">', $message['member']['group_icons'], '</li>';
+							<a href="', $message['member']['href'], '"><img src="', $message['member']['avatar']['href'], '" alt="" class="avatar_80 floatleft" style="margin-right: 2rem;" /></a>
+							<div>
+								<h4 class="largetext" style="display: inline;">', $message['member']['link'], '</h4>';
 
 	// Show the member's primary group (like 'Administrator') if they have one.
 	if (!empty($message['member']['group']))
 		echo '
-								<li class="membergroup">', $message['member']['group'], '</li>';
+								<span class="less">', $message['member']['group'], '</span>';
 
-	// Show the member's custom title, if they have one.
-	if (!empty($message['member']['title']))
-		echo '
-								<li class="title">', $message['member']['title'], '</li>';
-
-	// Don't show these things for guests.
-	if (!$message['member']['is_guest'])
-	{
-
-		// Show the post group if and only if they have no other group or the option is on, and they are in a post group.
-		if ((empty($modSettings['hide_post_group']) || empty($message['member']['group'])) && !empty($message['member']['post_group']))
-			echo '
-								<li class="postgroup">', $message['member']['post_group'], '</li>';
-
-		// Show how many posts they have made.
-		if (!isset($context['disabled_fields']['posts']))
-			echo '
-								<li class="postcount">', $txt['member_postcount'], ': ', $message['member']['posts'], '</li>';
-
-		// Show their personal text?
-		if (!empty($modSettings['show_blurb']) && !empty($message['member']['blurb']))
-			echo '
-								<li class="blurb">', $message['member']['blurb'], '</li>';
-
-		// Any custom fields to show as icons?
-		if (!empty($message['custom_fields']['icons']))
-		{
-			echo '
-								<li class="im_icons">
-									<ol>';
-
-			foreach ($message['custom_fields']['icons'] as $custom)
-				echo '
-										<li class="custom ', $custom['col_name'], '">', $custom['value'], '</li>';
-
-			echo '
-									</ol>
-								</li>';
-		}
-
-		// Show the website and email address buttons.
-		if ($message['member']['show_profile_buttons'])
-		{
-			echo '
-								<li class="profile">
-									<ol class="profile_icons">';
-
-			// Don't show an icon if they haven't specified a website.
-			if (!empty($message['member']['website']['url']) && !isset($context['disabled_fields']['website']))
-				echo '
-										<li><a href="', $message['member']['website']['url'], '" title="' . $message['member']['website']['title'] . '" target="_blank" class="new_win">', ($settings['use_image_buttons'] ? '<span class="generic_icons www centericon" title="' . $message['member']['website']['title'] . '"></span>' : $txt['www']), '</a></li>';
-
-			// Since we know this person isn't a guest, you *can* message them.
-			if ($context['can_send_pm'])
-				echo '
-										<li><a href="', $scripturl, '?action=pm;sa=send;u=', $message['member']['id'], '" title="', $message['member']['online']['is_online'] ? $txt['pm_online'] : $txt['pm_offline'], '">', $settings['use_image_buttons'] ? '<span class="generic_icons im_' . ($message['member']['online']['is_online'] ? 'on' : 'off') . ' centericon" title="' . ($message['member']['online']['is_online'] ? $txt['pm_online'] : $txt['pm_offline']) . '"></span> ' : ($message['member']['online']['is_online'] ? $txt['pm_online'] : $txt['pm_offline']), '</a></li>';
-
-			// Show the email if necessary
-			if (!empty($message['member']['email']) && $message['member']['show_email'])
-				echo '
-										<li class="email"><a href="mailto:' . $message['member']['email'] . '" rel="nofollow">', ($settings['use_image_buttons'] ? '<span class="generic_icons mail centericon" title="' . $txt['email'] . '"></span>' : $txt['email']), '</a></li>';
-
-				echo '
-									</ol>
-								</li>';
-		}
-
-		// Any custom fields for standard placement?
-		if (!empty($message['custom_fields']['standard']))
-			foreach ($message['custom_fields']['standard'] as $custom)
-				echo '
-								<li class="custom ', $custom['col_name'], '">', $custom['title'], ': ', $custom['value'], '</li>';
-
-	}
-	// Otherwise, show the guest's email.
-	elseif (!empty($message['member']['email']) && $message['member']['show_email'])
-		echo '
-								<li class="email"><a href="mailto:' . $message['member']['email'] . '" rel="nofollow">', ($settings['use_image_buttons'] ? '<span class="generic_icons mail centericon" title="' . $txt['email'] . '"></span>' : $txt['email']), '</a></li>';
-
-	// Show the IP to this user for this post - because you can moderate?
-	if (!empty($context['can_moderate_forum']) && !empty($message['member']['ip']))
-		echo '
-								<li class="poster_ip"><a href="', $scripturl, '?action=', !empty($message['member']['is_guest']) ? 'trackip' : 'profile;area=tracking;sa=ip;u=' . $message['member']['id'], ';searchip=', $message['member']['ip'], '">', $message['member']['ip'], '</a> <a href="', $scripturl, '?action=helpadmin;help=see_admin_ip" onclick="return reqOverlayDiv(this.href);" class="help">(?)</a></li>';
-
-	// Or, should we show it because this is you?
-	elseif ($message['can_see_ip'])
-		echo '
-								<li class="poster_ip"><a href="', $scripturl, '?action=helpadmin;help=see_member_ip" onclick="return reqOverlayDiv(this.href);" class="help">', $message['member']['ip'], '</a></li>';
-
-	// Okay, are you at least logged in? Then we can show something about why IPs are logged...
-	elseif (!$context['user']['is_guest'])
-		echo '
-								<li class="poster_ip"><a href="', $scripturl, '?action=helpadmin;help=see_member_ip" onclick="return reqOverlayDiv(this.href);" class="help">', $txt['logged'], '</a></li>';
-
-	// Otherwise, you see NOTHING!
-	else
-		echo '
-								<li class="poster_ip">', $txt['logged'], '</li>';
-
-	// Are we showing the warning status?
-	// Don't show these things for guests.
-	if (!$message['member']['is_guest'] && $message['member']['can_see_warning'])
-		echo '
-								<li class="warning">', $context['can_issue_warning'] ? '<a href="' . $scripturl . '?action=profile;area=issuewarning;u=' . $message['member']['id'] . '">' : '', '<span class="generic_icons warning_', $message['member']['warning_status'], '"></span> ', $context['can_issue_warning'] ? '</a>' : '', '<span class="warn_', $message['member']['warning_status'], '">', $txt['warn_' . $message['member']['warning_status']], '</span></li>';
-
-	// Are there any custom fields to show at the bottom of the poster info?
-	if (!empty($message['custom_fields']['bottom_poster']))
-		foreach ($message['custom_fields']['bottom_poster'] as $custom)
-			echo '
-									<li class="custom ', $custom['col_name'], '">', $custom['value'], '</li>';
-
-	// Poster info ends.
-	echo '
-							</ul>';
-	echo '
-						</div>
-						<div class="postarea">
-							<div class="keyinfo">';
-
+	
 	//Some people don't want subject ... The div is still required or quick edit breaks...
 	echo '
-								<div id="subject_', $message['id'], '" class="subject_title', (empty($modSettings['subject_toggle']) ? ' subject_hidden' : ''), '"><a href="', $message['href'], '" rel="nofollow">', $message['subject'], '</a></div>';
+							</div>
+						</div>
+						<div class="bwcell16">
+							<div><br>
+								<div id="subject_', $message['id'], '" class="subject_title', (empty($modSettings['subject_toggle']) ? ' subject_hidden' : ''), '">
+									<a href="', $message['href'], '" rel="nofollow"><h5 class="largetext">', $message['subject'], '</h5></a>
+								</div>';
 
 	echo '
-								<h5>
-									<span class="messageicon" ', ($message['icon_url'] !== $settings['images_url'] . '/post/xx.png') ? '' : 'style="position: absolute; z-index: -1;"', '>
-										<img src="', $message['icon_url'] . '" alt=""', $message['can_modify'] ? ' id="msg_icon_' . $message['id'] . '"' : '', '>
-									</span>
-									<a href="', $message['href'], '" rel="nofollow" title="', !empty($message['counter']) ? sprintf($txt['reply_number'], $message['counter'], ' - ') : '', $message['subject'], '" class="smalltext">', $message['time'], '</a>
-
-									<span class="page_number floatright">
-										', !empty($message['counter']) ? ' #' . $message['counter'] : '', ' ', '
-									</span>';
+								<span class="messageicon" ', ($message['icon_url'] !== $settings['images_url'] . '/post/xx.png') ? '' : 'style="position: absolute; z-index: -1;"', '>
+									<img src="', $message['icon_url'] . '" alt=""', $message['can_modify'] ? ' id="msg_icon_' . $message['id'] . '"' : '', '>
+								</span>
+								<a href="', $message['href'], '" rel="nofollow" title="', !empty($message['counter']) ? sprintf($txt['reply_number'], $message['counter'], ' - ') : '', $message['subject'], '" class="smalltext">', $message['time'], '</a>
+								<span class="page_number floatright">
+									', !empty($message['counter']) ? ' #' . $message['counter'] : '', ' ', '
+								</span>';
 	// Show "<< Last Edit: Time by Person >>" if this post was edited. But we need the div even if it wasn't modified!
 	// Because we insert into it through AJAX and we don't want to stop themers moving it around if they so wish so they can put it where they want it.
 	echo '
-									<span class="smalltext modified floatright', !empty($modSettings['show_modify']) && !empty($message['modified']['name']) ? ' mvisible' : '','" id="modified_', $message['id'], '">';
+								<span class="smalltext modified floatright', !empty($modSettings['show_modify']) && !empty($message['modified']['name']) ? ' mvisible' : '','" id="modified_', $message['id'], '">';
 
 	if (!empty($modSettings['show_modify']) && !empty($message['modified']['name']))
 		echo
-										$message['modified']['last_edit_text'];
+									$message['modified']['last_edit_text'];
 
 	echo '
-									</span>
-								</h5>
+								</span>
 								<div id="msg_', $message['id'], '_quick_mod"', $ignoring ? ' style="display:none;"' : '', '></div>
 							</div>';
 
@@ -692,6 +457,9 @@ function template_single_post($message)
 
 	// Show the post itself, finally!
 	echo '
+						</div>
+					</div>
+					<div class="bwcell16">
 							<div class="post">';
 
 	if (!$message['approved'] && $message['member']['id'] != 0 && $message['member']['id'] == $context['user']['id'])
@@ -970,7 +738,7 @@ function template_single_post($message)
 function template_quickreply()
 {
 	global $context, $modSettings, $scripturl, $options, $txt;
-	echo '
+	echo '<br>
 		<a id="quickreply"></a>
 		<div class="tborder" id="quickreplybox">
 			<div class="cat_bar">

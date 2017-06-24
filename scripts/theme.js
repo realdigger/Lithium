@@ -25,7 +25,7 @@ function fPop_show(what)
 }
 function fPop_slide(what, imag)
 {
-	$(imag).toggleClass('icon-up');
+	$(imag).toggleClass('icon-chevron-up');
 	$(what).slideToggle();
 }
 function fPop_slide_only(what)

@@ -132,7 +132,7 @@ function template_main()
 		if (!empty($context['topics']))
 			echo '
 	<div class="pagesection clear">
-		<a href="#bot" class="topbottom floatleft"><span class="icon-up icon-180"></span></a>
+		<a href="#bot" class="topbottom floatleft"><span class="icon-chevron-down"></span></a>
 		<div class="pagelinks">', $context['page_index'], '</div>
 	</div>';
 
@@ -232,7 +232,7 @@ function template_main()
 						<div class="bwcell3 centertext des">
 							', $topic['replies'], ' ', $txt['replies'], ' <br>', $topic['views'], ' ', $txt['views'], '
 						</div>
-							<div class="bwcell5 righttext des">
+						<div class="bwcell5 righttext des">
 							<span class="floatright avatar_in_40" style="margin-left: 1rem;">' , $topic['last_post']['member']['avatar']['image'] ,  '</span>
 							', sprintf($txt['last_post_topic'], '<a href="' . $topic['last_post']['href'] . '">' . $topic['last_post']['time'] . '</a>', $topic['last_post']['member']['link']), '
 						</div>';
@@ -316,7 +316,7 @@ function template_main()
 		if (!empty($context['topics']))
 			echo '
 	<div>
-		<a href="#frame" class="topbottom floatleft" id="bot"><span class="icon-up"></span></a>
+		<a href="#frame" class="topbottom floatleft" id="bot"><span class="icon-chevron-up"></span></a>
 		<div class="pagelinks floatleft">', $context['page_index'], '</div>
 	</div>';
 	}
@@ -324,6 +324,7 @@ function template_main()
 	// Show breadcrumbs at the bottom too.
 	echo '<br class="clear"><hr>';
 	theme_linktree();
+	echo '<br class="clear">';
 
 	if (!empty($context['can_quick_mod']) && $options['display_quick_mod'] == 1 && !empty($context['topics']) && $context['can_move'])
 		echo '
@@ -387,9 +388,9 @@ function template_topic_legend()
 						iCurBoardId: ', $context['current_board'], ',
 						iCurBoardChildLevel: ', $context['jump_to']['child_level'], ',
 						sCurBoardName: "', $context['jump_to']['board_name'], '",
-						sBoardChildLevelIndicator: "..",
-						sBoardPrefix: "",
-						sCatSeparator: "****************",
+						sBoardChildLevelIndicator: " -- ",
+						sBoardPrefix: " - ",
+						sCatSeparator: "-------------",
 						sCatPrefix: "",
 						sGoButtonLabel: "', $txt['quick_mod_go'], '"
 					});
@@ -397,8 +398,7 @@ function template_topic_legend()
 
 	echo '
 			<br class="clear">
-		</div>
-	</div>';
+';
 }
 
 function template_put_me_aside()
@@ -412,7 +412,7 @@ function template_put_me_aside()
 	if (!$context['no_topic_listing'])
 	{
 		echo '
-		<div class="less box_top">',
+		<div>',
 			template_button_strip($context['normal_buttons'], 'no'), '
 		</div>';
 	}
