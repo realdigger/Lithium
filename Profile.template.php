@@ -1,18 +1,8 @@
 <?php
-/**
- * Simple Machines Forum (SMF)
- *
- * @package SMF
- * @author Simple Machines http://www.simplemachines.org
- * @copyright 2017 Simple Machines and individual contributors
- * @license http://www.simplemachines.org/about/smf/license.php BSD
- *
- * @version 2.1 Beta 3
- */
 
-/**
- * Minor stuff shown above the main profile - mostly used for error messages and showing that the profile update was successful.
- */
+// Cesium 1.0
+// a rewrite theme
+
 function template_profile_above()
 {
 	global $context;
@@ -52,9 +42,13 @@ function template_profile_popup()
 
 	// Unlike almost every other template, this is designed to be included into the HTML directly via $().load()
 	echo '
-	<div class="themepadding">
-		<div class="popup_head"><b>', $context['member']['group'], '</b></div>
-		<div class="popup_bod">';
+	<div id="quser" style="display: none;">
+		<div class="floatleft">
+			<a href="', $scripturl, '?action=profile;u=', $context['user']['id'], '">', $context['member']['avatar']['image'], '</a>
+		</div>
+		<div class="floatleft">
+			<p><a href="', $scripturl, '?action=profile;u=', $context['user']['id'], '">', $context['user']['name'], '</a></p>
+			<p>', $context['member']['group'], '</p>	';
 
 	$menu_context = &$context[$context['profile_menu_name']];
 	foreach ($context['profile_items'] as $item)
@@ -62,8 +56,9 @@ function template_profile_popup()
 		$area = &$menu_context['sections'][$item['menu']]['areas'][$item['area']];
 		$item_url = (isset($item['url']) ? $item['url'] : (isset($area['url']) ? $area['url'] : $menu_context['base_url'] . ';area=' . $item['area'])) . $menu_context['extra_parameters'];
 		echo '
-			<a href="', $item_url, '" class="but">', !empty($item['title']) ? $item['title'] : $area['label'], '</a>';
+			<p><a href="', $item_url, '">', !empty($item['title']) ? $item['title'] : $area['label'], '</a></p>';
 	}
+
 	echo '
 		</div>
 	</div>';
@@ -144,62 +139,63 @@ function template_summary()
 
 	// Display the basic information about the user
 	echo '
-	<div id="profileview" class="roundframe flow_auto noup">
-		<div id="basicinfo">';
+<div class="bwgrid">
+	<div class="bwcell7">
+		<div class="cat_bg">
+			<h3 class="catbg largetext"><b>', $context['member']['name'], '</b>
+				', $context['member']['online']['is_online']==1 ? '<span class="member_is_online"></span>' : '' , '
+			</h3>
+		</div>
+		<div class="desc">', (!empty($context['member']['group']) ? $context['member']['group'] : $context['member']['post_group']), '</div>
+		<div class="avatar_profile">', $context['member']['avatar']['image'], '</div>';
 
 	// Are there any custom profile fields for above the name?
 	if (!empty($context['print_custom_fields']['above_member']))
 	{
 		echo '
-			<div class="custom_fields_above_name">
-				<ul >';
+		<div class="information">
+			<ul>';
 
 		foreach ($context['print_custom_fields']['above_member'] as $field)
 			if (!empty($field['output_html']))
 				echo '
-					<li>', $field['output_html'], '</li>';
+				<li>', $field['output_html'], '</li>';
 
 		echo '
-				</ul>
-			</div>
-			<br>';
+			</ul>
+		</div>';
 	}
-
-	echo '
-			<div class="username clear">
-				<h4>', $context['member']['name'], '<span class="position">', (!empty($context['member']['group']) ? $context['member']['group'] : $context['member']['post_group']), '</span></h4>
-			</div>
-			', $context['member']['avatar']['image'];
 
 	// Are there any custom profile fields for below the avatar?
 	if (!empty($context['print_custom_fields']['below_avatar']))
 	{
 		echo '
-			<div class="custom_fields_below_avatar">
-				<ul >';
+		<div class="information">
+			<ul>';
 
 		foreach ($context['print_custom_fields']['below_avatar'] as $field)
 			if (!empty($field['output_html']))
 				echo '
-					<li>', $field['output_html'], '</li>';
+				<li><span>', $field['output_html'], '</span></li>';
 
 		echo '
-				</ul>
-			</div>
-			<br>';
+			</ul>
+		</div>';
 	}
 
-		echo '
-			<ul class="clear">';
+	echo '
+		<div class="bordering">
+			<ul class="nolist horiz_list">';
+	
 	// Email is only visible if it's your profile or you have the moderate_forum permission
 	if ($context['member']['show_email'])
 		echo '
-				<li><a href="mailto:', $context['member']['email'], '" title="', $context['member']['email'], '" rel="nofollow"><span class="generic_icons mail" title="' . $txt['email'] . '"></span></a></li>';
+				<li><a href="mailto:', $context['member']['email'], '" title="', $context['member']['email'], '" rel="nofollow"><span class="icon-envelope" title="' . $txt['email'] . '"></span></a></li>';
 
 	// Don't show an icon if they haven't specified a website.
 	if ($context['member']['website']['url'] !== '' && !isset($context['disabled_fields']['website']))
 		echo '
-				<li><a href="', $context['member']['website']['url'], '" title="' . $context['member']['website']['title'] . '" target="_blank" class="new_win">', ($settings['use_image_buttons'] ? '<span class="generic_icons www" title="' . $context['member']['website']['title'] . '"></span>' : $txt['www']), '</a></li>';
+				<li><a href="', $context['member']['website']['url'], '" title="' . $context['member']['website']['title'] . '" target="_blank" class="new_win">', ($settings['use_image_buttons'] ? '<span class="icon-home" title="' . $context['member']['website']['title'] . '"></span>' : $txt['www']), '</a></li>';
 
 	// Are there any custom profile fields as icons?
 	if (!empty($context['print_custom_fields']['icons']))
@@ -207,57 +203,57 @@ function template_summary()
 		foreach ($context['print_custom_fields']['icons'] as $field)
 			if (!empty($field['output_html']))
 				echo '
-					<li class="custom_field">', $field['output_html'], '</li>';
+				<li class="custom_field">', $field['output_html'], '</li>';
 	}
 
 	echo '
 			</ul>
-			<span id="userstatus">', $context['can_send_pm'] ? '<a href="' . $context['member']['online']['href'] . '" title="' . $context['member']['online']['text'] . '" rel="nofollow">' : '', $settings['use_image_buttons'] ? '<span class="' . ($context['member']['online']['is_online'] == 1 ? 'on' : 'off') . '" title="' . $context['member']['online']['text'] . '"></span>' : $context['member']['online']['label'], $context['can_send_pm'] ? '</a>' : '', $settings['use_image_buttons'] ? '<span class="smalltext"> ' . $context['member']['online']['label'] . '</span>' : '';
+		</div>
+		', $context['can_send_pm'] ? '<a href="' . $context['member']['online']['href'] . '" title="' . $context['member']['online']['text'] . '" rel="nofollow">' : '', ($context['member']['online']['is_online'] == 1 ? '<b>'.$context['member']['online']['text'].'</b>' : $context['member']['online']['text'])  , $context['can_send_pm'] ? '</a>' : '';
 
 	// Can they add this member as a buddy?
 	if (!empty($context['can_have_buddy']) && !$context['user']['is_owner'])
 		echo '
-				<br><a href="', $scripturl, '?action=buddy;u=', $context['id_member'], ';', $context['session_var'], '=', $context['session_id'], '">[', $txt['buddy_' . ($context['member']['is_buddy'] ? 'remove' : 'add')], ']</a>';
-
-	echo '
-			</span>';
-
+		| <a href="', $scripturl, '?action=buddy;u=', $context['id_member'], ';', $context['session_var'], '=', $context['session_id'], '">[', $txt['buddy_' . ($context['member']['is_buddy'] ? 'remove' : 'add')], ']</a>';
 	if (!$context['user']['is_owner'] && $context['can_send_pm'])
 		echo '
-			<a href="', $scripturl, '?action=pm;sa=send;u=', $context['id_member'], '" class="infolinks">', $txt['profile_sendpm_short'], '</a>';
+		| <a href="', $scripturl, '?action=pm;sa=send;u=', $context['id_member'], '">', $txt['profile_sendpm_short'], '</a>';
 
 	echo '
-			<a href="', $scripturl, '?action=profile;area=showposts;u=', $context['id_member'], '" class="infolinks">', $txt['showPosts'], '</a>';
+		| <a href="', $scripturl, '?action=profile;area=showposts;u=', $context['id_member'], '">', $txt['showPosts'], '</a>';
 
 	if ($context['user']['is_owner'] && !empty($modSettings['drafts_post_enabled']))
 		echo '
-			<a href="', $scripturl, '?action=profile;area=showdrafts;u=', $context['id_member'], '" class="infolinks">', $txt['drafts_show'], '</a>';
+		| <a href="', $scripturl, '?action=profile;area=showdrafts;u=', $context['id_member'], '">', $txt['drafts_show'], '</a>';
 
 	echo '
-			<a href="', $scripturl, '?action=profile;area=statistics;u=', $context['id_member'], '" class="infolinks">', $txt['statPanel'], '</a>';
-
+		|  <a href="', $scripturl, '?action=profile;area=statistics;u=', $context['id_member'], '">', $txt['statPanel'], '</a>';
+	
+	
 	// Are there any custom profile fields for bottom?
 	if (!empty($context['print_custom_fields']['bottom_poster']))
 	{
 		echo '
-			<div class="custom_fields_bottom">
-				<ul class="nolist">';
+		<div class="information">
+			<ul>';
 
 		foreach ($context['print_custom_fields']['bottom_poster'] as $field)
 			if (!empty($field['output_html']))
 				echo '
-					<li>', $field['output_html'], '</li>';
+				<li>', $field['output_html'], '</li>';
 
 		echo '
-				</ul>
-			</div>';
+			</ul>
+		</div>';
 	}
 
 	echo '
-		</div>';
-
-	echo '
-		<div id="detailedinfo">
+	</div>
+	<div class="bwcell9">
+		<div class="bwgutter_left">
+			<div class="cat_bar">
+				<h3 class="catbg">' , $txt['profileInfo'] , '</h3>
+			</div>
 			<dl class="settings">';
 
 	if ($context['user']['is_owner'] || $context['user']['is_admin'])
@@ -289,7 +285,7 @@ function template_summary()
 
 	echo '
 				<dt>', $txt['age'], ':</dt>
-				<dd>', $context['member']['age'] . ($context['member']['today_is_birthday'] ? ' &nbsp; <img src="' . $settings['images_url'] . '/cake.png" alt="">' : ''), '</dd>';
+				<dd>', ($context['member']['today_is_birthday'] ? '<span class="icon-color-birthday"></span> &nbsp;' : ''), $context['member']['age'] , '</dd>';
 
 	echo '
 			</dl>';
@@ -395,13 +391,13 @@ function template_summary()
 	if (!empty($context['print_custom_fields']['above_signature']))
 	{
 		echo '
-				<div class="custom_fields_above_signature">
-					<ul class="nolist">';
+				<div class="bordering">
+					<ul class="nolist horiz_list">';
 
 		foreach ($context['print_custom_fields']['above_signature'] as $field)
 			if (!empty($field['output_html']))
 				echo '
-						<li>', $field['output_html'], '</li>';
+						<li>', $field['value'], '</li>';
 
 		echo '
 					</ul>
@@ -420,8 +416,8 @@ function template_summary()
 	if (!empty($context['print_custom_fields']['below_signature']))
 	{
 		echo '
-				<div class="custom_fields_below_signature">
-					<ul class="nolist">';
+				<div class="information">
+					<ul>';
 
 		foreach ($context['print_custom_fields']['below_signature'] as $field)
 			if (!empty($field['output_html']))
@@ -434,9 +430,10 @@ function template_summary()
 	}
 
 	echo '
+			</div>
 		</div>
 	</div>
-<div class="clear"></div>';
+	<div class="clear"></div>';
 }
 
 /**
@@ -452,9 +449,9 @@ function template_showPosts()
 				', (!isset($context['attachments']) && empty($context['is_topics']) ? $txt['showMessages'] : (!empty($context['is_topics']) ? $txt['showTopics'] : $txt['showAttachments'])), ' - ', $context['member']['name'], '
 			</h3>
 		</div>', !empty($context['page_index']) ? '
-		<div class="pagesection">
+		<div class="pagesection" style="overflow: hidden;">
 			<div class="pagelinks">' . $context['page_index'] . '</div>
-		</div>' : '';
+		</div><br>' : '';
 
 	// Are we displaying posts or attachments?
 	if (!isset($context['attachments']))
@@ -463,17 +460,14 @@ function template_showPosts()
 		foreach ($context['posts'] as $post)
 		{
 			echo '
-			<div class="', $post['css_class'], '">
-				<div class="counter">', $post['counter'], '</div>
-				<div class="topic_details">
-					<h5><strong><a href="', $scripturl, '?board=', $post['board']['id'], '.0">', $post['board']['name'], '</a> / <a href="', $scripturl, '?topic=', $post['topic'], '.', $post['start'], '#msg', $post['id'], '">', $post['subject'], '</a></strong></h5>
-					<span class="smalltext">', $post['time'], '</span>
-				</div>
-				<div class="list_posts">';
+			<div class="clear">
+				<h4>', $post['counter'], '. <strong><a href="', $scripturl, '?topic=', $post['topic'], '.', $post['start'], '#msg', $post['id'], '">', $post['subject'], '</a></strong></h4>
+				<div class="desc"><a href="', $scripturl, '?board=', $post['board']['id'], '.0">', $post['board']['name'], '</a> / ', $post['time'], '</div>
+				<div class="post">';
 
 			if (!$post['approved'])
 				echo '
-					<div class="approve_post">
+					<div class="infobox">
 						<em>', $txt['post_awaiting_approval'], '</em>
 					</div>';
 
@@ -483,9 +477,8 @@ function template_showPosts()
 
 			if ($post['can_reply'] || $post['can_quote'] || $post['can_delete'])
 				echo '
-				<div class="floatright">
-					<ul class="quickbuttons">';
-
+				<div class="generic_menu rootmenu qbuttons">
+					<ul class="menu_nav nolist dropmenu">';
 			// If they *can* reply?
 			if ($post['can_reply'])
 				echo '
@@ -504,7 +497,7 @@ function template_showPosts()
 			if ($post['can_reply'] || $post['can_quote'] || $post['can_delete'])
 				echo '
 					</ul>
-				</div>';
+				</div><br class="clear" />';
 
 			echo '
 			</div>';
@@ -516,7 +509,7 @@ function template_showPosts()
 	// No posts? Just end with a informative message.
 	if ((isset($context['attachments']) && empty($context['attachments'])) || (!isset($context['attachments']) && empty($context['posts'])))
 		echo '
-			<div class="windowbg2">
+			<div class="infobox">
 				', isset($context['attachments']) ? $txt['show_attachments_none'] : ($context['is_topics'] ? $txt['show_topics_none'] : $txt['show_posts_none']), '
 			</div>';
 
@@ -560,16 +553,24 @@ function template_showAlerts()
 		// Start the form.
 		echo '
 		<form action="', $scripturl, '?action=profile;u=', $context['id_member'], ';area=showalerts;save" method="post" accept-charset="', $context['character_set'], '" id="mark_all">
-			<table id="alerts" class="table_grid">';
+			<table id="alerts" class="table_grid">
+				<thead>
+					<tr>
+						<th>' , $txt['ces_text'] ,'</th>
+						<th>' , $txt['ces_time'] ,'</th>
+						<th>' , $txt['ces_actions'] ,'</th>
+					</tr>
+				<thead>
+				<tbody>';
 
 		foreach ($context['alerts'] as $id => $alert)
 		{
 			echo '
-				<tr class="windowbg">
+				<tr class="windowbg' , $alert['is_read'] != 0 ? ' alert_unread' : ' alert_read', '">
 					<td>', $alert['text'], '</td>
 					<td>', $alert['time'], '</td>
 					<td>
-						<ul class="quickbuttons">
+						<ul class="quickbuttons floatright">
 							<li><a href="', $scripturl, '?action=profile;u=', $context['id_member'], ';area=showalerts;do=remove;aid=', $id, ';', $context['session_var'], '=', $context['session_id'], '" class="you_sure"><span class="generic_icons remove_button"></span>', $txt['delete'], '</a></li>
 							<li><a href="', $scripturl, '?action=profile;u=', $context['id_member'], ';area=showalerts;do=', ($alert['is_read'] != 0 ? 'unread' : 'read'), ';aid=', $id, ';', $context['session_var'], '=', $context['session_id'], '"><span class="generic_icons ', $alert['is_read'] != 0 ? 'unread_button' : 'read_button', '"></span>', ($alert['is_read'] != 0 ? $txt['mark_unread'] : $txt['mark_read_short']), '</a></li>
 							<li><input type="checkbox" class="input_check" name="mark[', $id, ']" value="', $id, '"></li>
@@ -579,6 +580,7 @@ function template_showAlerts()
 		}
 
 		echo '
+				</tbody>
 			</table>
 			<div class="pagesection">
 				<div class="floatleft">
@@ -614,12 +616,12 @@ function template_showDrafts()
 		</div>', !empty($context['page_index']) ? '
 		<div class="pagesection">
 			<div class="pagelinks">' . $context['page_index'] . '</div>
-		</div>' : '';
+		</div><br>' : '';
 
 	// No drafts? Just show an informative message.
 	if (empty($context['drafts']))
 		echo '
-		<div class="windowbg2 centertext">
+		<div class="infobox centertext">
 			', $txt['draft_none'], '
 		</div>';
 	else
@@ -628,30 +630,29 @@ function template_showDrafts()
 		foreach ($context['drafts'] as $draft)
 		{
 			echo '
-				<div class="windowbg">
-					<div class="counter">', $draft['counter'], '</div>
+				<div class="clear">
 					<div class="topic_details">
-						<h5><strong><a href="', $scripturl, '?board=', $draft['board']['id'], '.0">', $draft['board']['name'], '</a> / ', $draft['topic']['link'], '</strong> &nbsp; &nbsp;';
+						<h4>', $draft['counter'], '.', $draft['topic']['link'];
 
 			if (!empty($draft['sticky']))
-				echo '<span class="generic_icons sticky" title="', $txt['sticky_topic'], '"></span>';
+				echo '<span class="icon-pin" title="', $txt['sticky_topic'], '"></span>';
 
 			if (!empty($draft['locked']))
-				echo '<span class="generic_icons lock" title="', $txt['locked_topic'], '"></span>';
+				echo '<span class="icon-lock" title="', $txt['locked_topic'], '"></span>';
 
 			echo '
-						</h5>
-						<span class="smalltext">&#171;&nbsp;<strong>', $txt['on'], ':</strong> ', $draft['time'], '&nbsp;&#187;</span>
+						</h4>
+						<div class="desc">', $txt['on'], ': ', $draft['time'], ' / <a href="', $scripturl, '?board=', $draft['board']['id'], '.0">', $draft['board']['name'], '</a></div>
 					</div>
-					<div class="list_posts">
+					<div class="post">
 						', $draft['body'], '
 					</div>
-				<div class="floatright">
-					<ul class="quickbuttons">
+				<div class="generic_menu rootmenu qbuttons">
+					<ul class="menu_nav nolist dropmenu">
 						<li><a href="', $scripturl, '?action=post;', (empty($draft['topic']['id']) ? 'board=' . $draft['board']['id'] : 'topic=' . $draft['topic']['id']), '.0;id_draft=', $draft['id_draft'], '"><span class="generic_icons reply_button"></span>', $txt['draft_edit'], '</a></li>
 						<li><a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=showdrafts;delete=', $draft['id_draft'], ';', $context['session_var'], '=', $context['session_id'], '" data-confirm="', $txt['draft_remove'], '" class="you_sure"><span class="generic_icons remove_button"></span>', $txt['draft_delete'], '</a></li>
 					</ul>
-				</div>
+				</div><br class="clear">
 			</div>';
 		}
 	}
@@ -1196,9 +1197,9 @@ function template_statPanel()
 
 	// First, show a few text statistics such as post/topic count.
 	echo '
-	<div id="profileview" class="roundframe">
+	<div id="profileview" class="toppadding">
 		<div id="generalstats">
-			<dl class="stats">
+			<dl class="statspanel settings">
 				<dt>', $txt['statPanel_total_time_online'], ':</dt>
 				<dd>', $context['time_logged_in'], '</dd>
 				<dt>', $txt['statPanel_total_posts'], ':</dt>
@@ -1210,123 +1211,107 @@ function template_statPanel()
 				<dt>', $txt['statPanel_users_votes'], ':</dt>
 				<dd>', $context['num_votes'], ' ', $txt['statPanel_votes'], '</dd>
 			</dl>
-		</div>';
-
-	// This next section draws a graph showing what times of day they post the most.
-	echo '
+		</div>
 		<div id="activitytime" class="flow_hidden">
-			<div class="title_bar">
-				<h3 class="titlebg">
-					<span class="generic_icons history"></span> ', $txt['statPanel_activityTime'], '
+			<div class="cat_bar">
+				<h3 class="catbg">
+					 ', $txt['statPanel_activityTime'], '
 				</h3>
-			</div>';
-
+			</div>
+			<div class="bwgrid_less">';
+	
 	// If they haven't post at all, don't draw the graph.
 	if (empty($context['posts_by_time']))
 		echo '
-			<p class="centertext padding">', $txt['statPanel_noPosts'], '</p>';
+				<p class="centertext padding">', $txt['statPanel_noPosts'], '</p>';
 	// Otherwise do!
 	else
 	{
-		echo '
-			<ul class="activity_stats flow_hidden">';
-
+		
 		// The labels.
 		foreach ($context['posts_by_time'] as $time_of_day)
 		{
 			echo '
-				<li', $time_of_day['is_last'] ? ' class="last"' : '', '>
-					<div class="bar" style="padding-top: ', ((int) (100 - $time_of_day['relative_percent'])), 'px;" title="', sprintf($txt['statPanel_activityTime_posts'], $time_of_day['posts'], $time_of_day['posts_percent']), '">
-						<div style="height: ', (int) $time_of_day['relative_percent'], 'px;">
-							<span>', sprintf($txt['statPanel_activityTime_posts'], $time_of_day['posts'], $time_of_day['posts_percent']), '</span>
+				<div class="bwcell4percent">
+					<div class="statbar">
+						<div class="indicatorpanel">
+							<span class="topcircle"></span>
+							<span class="bline" style="margin-top: ',  ((int) (100- $time_of_day['relative_percent'])), 'px; height: ',  $time_of_day['relative_percent'], 'px;"></span>
+							<span class="botcircle' , empty($time_of_day['relative_percent']) ? ' faded' : '' , '">' , substr($time_of_day['hour_format'],0,2) , '</span>
 						</div>
 					</div>
-					<span class="stats_hour">', $time_of_day['hour_format'], '</span>
-				</li>';
-		}
-
-		echo '
-
-			</ul>';
-	}
-
-	echo '
-		</div>';
-
-	// Two columns with the most popular boards by posts and activity (activity = users posts / total posts).
-	echo '
-		<div class="flow_hidden">
-			<div class="half_content">
-				<div class="title_bar">
-					<h3 class="titlebg">
-						<span class="generic_icons replies"></span> ', $txt['statPanel_topBoards'], '
-					</h3>
 				</div>';
+			}
+	}
+	echo '
+			</div>
+			<br class="clear">
+			<div class="cat_bar">
+				<h3 class="catbg">
+					<span class="generic_icons replies"></span> ', $txt['statPanel_topBoards'], '
+				</h3>
+			</div>';
 
 	if (empty($context['popular_boards']))
 		echo '
-				<p class="centertext padding">', $txt['statPanel_noPosts'], '</p>';
-
+			<p class="centertext padding">', $txt['statPanel_noPosts'], '</p>';
 	else
 	{
 		echo '
-				<dl class="stats">';
+			<dl class="statspanel settings">';
 
-		// Draw a bar for every board.
 		foreach ($context['popular_boards'] as $board)
 		{
 			echo '
-					<dt>', $board['link'], '</dt>
-					<dd>
-						<div class="profile_pie" style="background-position: -', ((int) ($board['posts_percent'] / 5) * 20), 'px 0;" title="', sprintf($txt['statPanel_topBoards_memberposts'], $board['posts'], $board['total_posts_member'], $board['posts_percent']), '">
-							', sprintf($txt['statPanel_topBoards_memberposts'], $board['posts'], $board['total_posts_member'], $board['posts_percent']), '
-						</div>
-						', empty($context['hide_num_posts']) ? $board['posts'] : '', '
-					</dd>';
+				<dt>', $board['link'], '</dt>
+				<dd>
+					', empty($context['hide_num_posts']) ? '<span class="floatright">'.$board['posts'].'</span>' : '', '
+					<span class="backline">
+						<span class="percentline" style="width: ' , $board['posts_percent'] , '%;"></span>
+						<span class="rightcircle" style="left: ' , $board['posts_percent'] , '%;"></span>
+					</span>
+				</dd>';
 		}
 
 		echo '
-				</dl>';
+			</dl>';
 	}
 	echo '
+		</div>
+		<div class="half_content">
+			<div class="cat_bar">
+				<h3 class="catbg">
+					<span class="generic_icons replies"></span> ', $txt['statPanel_topBoardsActivity'], '
+				</h3>
 			</div>';
-	echo '
-			<div class="half_content">
-				<div class="title_bar">
-					<h3 class="titlebg">
-						<span class="generic_icons replies"></span> ', $txt['statPanel_topBoardsActivity'], '
-					</h3>
-				</div>';
 
 	if (empty($context['board_activity']))
 		echo '
-				<p class="centertext padding">', $txt['statPanel_noPosts'], '</p>';
+			<p class="centertext padding">', $txt['statPanel_noPosts'], '</p>';
 	else
 	{
 		echo '
-				<dl class="stats">';
+			<dl class="statspanel settings">';
 
 		// Draw a bar for every board.
 		foreach ($context['board_activity'] as $activity)
 		{
 			echo '
-					<dt>', $activity['link'], '</dt>
-					<dd>
-						<div class="profile_pie" style="background-position: -', ((int) ($activity['percent'] / 5) * 20), 'px 0;" title="', sprintf($txt['statPanel_topBoards_posts'], $activity['posts'], $activity['total_posts'], $activity['posts_percent']), '">
-							', sprintf($txt['statPanel_topBoards_posts'], $activity['posts'], $activity['total_posts'], $activity['posts_percent']), '
-						</div>
-						', $activity['percent'], '%
-					</dd>';
-		}
+				<dt>', $activity['link'], '</dt>
+				<dd>
+					', empty($context['hide_num_posts']) ? '<span class="floatright">'.$activity['percent'].'%</span>' : '', '
+					<span class="backline">
+						<span class="percentline" style="width: ' , $activity['posts_percent'] , '%;"></span>
+						<span class="rightcircle" style="left: ' , $activity['posts_percent'] , '%;"></span>
+					</span>
+				</dd>';
+			}
 
 		echo '
-				</dl>';
+			</dl>';
 	}
 	echo '
-			</div>
-		</div>';
-
-	echo '
+		</div>
 	</div>';
 }
 
@@ -2752,7 +2737,7 @@ function template_profile_avatar_select()
 	// Start with the upper menu
 	echo '
 							<dt>
-								<strong id="personal_picture"><label for="avatar_upload_box">', $txt['personal_picture'], '</label></strong>
+								<strong id="personal_picture"><label for="avatar_upload_box">', $txt['personal_picture'], '</label></strong><br>
 								', empty($modSettings['gravatarOverride']) ? '<input type="radio" onclick="swap_avatar(this); return true;" name="avatar_choice" id="avatar_choice_none" value="none"' . ($context['member']['avatar']['choice'] == 'none' ? ' checked="checked"' : '') . ' class="input_radio" /><label for="avatar_choice_none"' . (isset($context['modify_error']['bad_avatar']) ? ' class="error"' : '') . '>' . $txt['no_avatar'] . '</label><br />' : '', '
 								', !empty($context['member']['avatar']['allow_server_stored']) ? '<input type="radio" onclick="swap_avatar(this); return true;" name="avatar_choice" id="avatar_choice_server_stored" value="server_stored"' . ($context['member']['avatar']['choice'] == 'server_stored' ? ' checked="checked"' : '') . ' class="input_radio" /><label for="avatar_choice_server_stored"' . (isset($context['modify_error']['bad_avatar']) ? ' class="error"' : '') . '>' . $txt['choose_avatar_gallery'] . '</label><br />' : '', '
 								', !empty($context['member']['avatar']['allow_external']) ? '<input type="radio" onclick="swap_avatar(this); return true;" name="avatar_choice" id="avatar_choice_external" value="external"' . ($context['member']['avatar']['choice'] == 'external' ? ' checked="checked"' : '') . ' class="input_radio" /><label for="avatar_choice_external"' . (isset($context['modify_error']['bad_avatar']) ? ' class="error"' : '') . '>' . $txt['my_own_pic'] . '</label><br />' : '', '
@@ -2766,7 +2751,7 @@ function template_profile_avatar_select()
 	{
 		echo '
 								<div id="avatar_server_stored">
-									<div>
+									<div class="floatleft">
 										<select name="cat" id="cat" size="10" onchange="changeSel(\'\');" onfocus="selectRadioByName(document.forms.creator.avatar_choice, \'server_stored\');">';
 		// This lists all the file categories.
 		foreach ($context['avatars'] as $avatar)
@@ -2775,10 +2760,10 @@ function template_profile_avatar_select()
 		echo '
 										</select>
 									</div>
-									<div>
+									<div class="floatleft">
 										<select name="file" id="file" size="10" style="display: none;" onchange="showAvatar()" onfocus="selectRadioByName(document.forms.creator.avatar_choice, \'server_stored\');" disabled><option></option></select>
 									</div>
-									<div><img id="avatar" src="', !empty($context['member']['avatar']['allow_external']) && $context['member']['avatar']['choice'] == 'external' ? $context['member']['avatar']['external'] : $modSettings['avatar_url'] . '/blank.png', '" alt="Do Nothing"></div>
+									<div class="floatleft"><img id="avatar" src="', !empty($context['member']['avatar']['allow_external']) && $context['member']['avatar']['choice'] == 'external' ? $context['member']['avatar']['external'] : $modSettings['avatar_url'] . '/blank.png', '" alt="Do Nothing"></div>
 									<script>
 										var files = ["' . implode('", "', $context['avatar_list']) . '"];
 										var avatar = document.getElementById("avatar");

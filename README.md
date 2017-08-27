@@ -1,2 +1,6 @@
 # lithium
-SMF2.1 theme
+
+// Lithium 1.0
+// a rewrite theme
+
+

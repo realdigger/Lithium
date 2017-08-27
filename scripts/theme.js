@@ -1,39 +1,77 @@
+// to have some knowledge about touch devices in js too
+var supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+
 $(function() {
+	$('ul.dropmenu, ul.quickbuttons').superfish({delay : 0, speed: 50, sensitivity : 8, interval : 10, timeout : 1});
 	// tooltips
 	$('.preview').SMFtooltip();
-
 	// find all nested linked images and turn off the border
 	$('a.bbc_link img.bbc_img').parent().css('border', '0');
+	
+	var $th = $(".table_grid thead th");
+	var $tr = $(".table_grid tbody tr");
+	$tr.each(function(){
+		$(this).find('td').each(function(index){
+			$(this).attr('data-label', $th.eq(index).text());
+		});
+	});
 });
 
-function fPop(where)
+function fPop_toggle(what)
 {
-	$('.f_pop_body').removeClass('f_pop_body_show');
-	$(where).addClass('f_pop_body_show');
+	$(what).slideToggle(150);
 }
-function fPop_close()
+function fPop_toggle_class(what,cl)
 {
-	$('.f_pop_body').removeClass('f_pop_body_show');
-}
-function fPop_copy(what, where)
-{
-	$(where).val($(what).val());
-}
-function fPop_show(what)
-{
-	$(what).show();
-}
-function fPop_slide(what, imag)
-{
-	$(imag).toggleClass('icon-chevron-up');
-	$(what).slideToggle();
-}
-function fPop_slide_only(what)
-{
-	$(what).slideToggle();
+	$(what).slideToggle(cl);
 }
 
+function fPop_showAtt(what)
+{
+	$('#attframe').show(0);
+	$(what).toggle(0);
+}
+function fPop_hideAtt()
+{
+	$('#attframe').hide(0);
+}
 
+function fPop_slide(what,speed)
+{
+	$(".bot_menu_mobile").slideUp(1);
+	speed = speed || 150;
+	if ($(what).is(":hidden")) {
+		$(what).slideToggle(speed);
+	}
+}
+
+function fPop_slide_sub(what, trigger,topclass)
+{
+	if (topclass != '') {
+		$(topclass).slideUp(0);
+		if ($(what).is(":hidden")) {
+			$(what).slideToggle(150);
+		}
+	}
+	else {
+		$(what).slideToggle(150);
+	}
+}
+
+function fPop_slide_all(what, speed)
+{
+	$(what).slideUp(100);
+}
+function fPop_showImage(what)
+{
+	$(what).toggle(0);
+}
+function fPop_showImage_only(what,clas)
+{
+	$(clas).hide(0);
+	$(what).toggle(0);
+	$(what + '_title').toggle(0);
+}
 // The purpose of this code is to fix the height of overflow: auto blocks, because some browsers can't figure it out for themselves.
 function smf_codeBoxFix()
 {
@@ -91,3 +129,4 @@ function smf_addButton(stripId, image, options)
 		'</a>'
 	);
 }
+
