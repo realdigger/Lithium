@@ -175,7 +175,7 @@ function template_html_above()
 	echo $context['html_headers'];
 
 	echo '
-	<link href="https://fonts.googleapis.com/css?family=Arimo:400,400i,700|Cuprum" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet">
 
 </head>
 <body>';
@@ -282,7 +282,7 @@ function template_body_above()
 		</div>
 		<div id="main_content">
 			<div class="fwidth">
-				<div id="fheader"><div class="fheader_inner">';
+				<div id="fheader">';
 
 	// If the user is logged in, display some things that might be useful.
 	if ($context['user']['is_logged'])
@@ -291,7 +291,7 @@ function template_body_above()
 		loadlanguage('PersonalMessage');
 		// Firstly, the user's menu
 		echo '
-					<ul class="nolist dropmenu des">
+					<ul class="nolist dropmenu des" id="tprofile">
 						<li>
 							<a href="', $scripturl, '?action=profile"', !empty($context['self_profile']) ? ' class="active"' : '', '><b>', $context['user']['name'], '</b></a>
 							<ul class="des">
@@ -344,7 +344,7 @@ function template_body_above()
 					</ul>';
 	}
 
-	echo '
+	echo '<div class="fheader_inner">
 					<div class="floatpop mob">
 						<span class="icon-location2 floatright" style="color: #fff;" onclick="fPop_toggle(\'#flinktree_mob\'); return false;"></span>
 				   </div>';			
@@ -357,12 +357,17 @@ function template_body_above()
 					</div>';
 	}
 					
-	echo '
-					<h1>
+	echo '		<div style="oveflow: hidden;">
+					<h1 class="floatleft">
 						<a id="top" href="', $scripturl, '">', empty($context['header_logo_url_html_safe']) ? $context['forum_name_html_safe'] : '<img style="max-width: 100%;" src="' . $context['header_logo_url_html_safe'] . '" alt="' . $context['forum_name_html_safe'] . '">', '</a>
 					</h1>';
+	if (!empty($settings['enable_news']) && !empty($context['random_news_line']))
+		echo '
+					<div id="fnews" class="floatleft">
+						<strong>', $txt['news'], ': </strong>', $context['random_news_line'], '
+					</div>';
 
-
+	echo '		</div>';
 	if(function_exists('template_generic_menu'))
 		echo '	
 						<div class="clear_right"><span class="icon-menu mob icon-bigger" onclick="fPop_toggle(\'#admenu\'); return false;"></span></div>';			
@@ -372,7 +377,6 @@ function template_body_above()
 					<div class="mob" style="opacity: 0.5; margin: 0.5rem 0 0 0;">' , $txt['hello_guest'] , ' ' , $context['user']['name'] , '</div>';
 
 	echo '		<br class="clear">		
-					<div class="des clear">' , template_menu($exists) , '</div>
 					<div id="flinktree" class="des">
 						' , theme_linktree() , '	
 					</div>				
@@ -399,11 +403,6 @@ function template_body_above()
 						</ul>
 					</div></div>';
 
-	if (!empty($settings['enable_news']) && !empty($context['random_news_line']))
-		echo '
-					<div id="fnews">
-						<strong>', $txt['news'], ': </strong>', $context['random_news_line'], '
-					</div>';
 	
 	echo '
 				</div>';

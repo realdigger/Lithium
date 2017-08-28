@@ -130,21 +130,9 @@ function subtemplate_topiclist()
 				<span class="avatar_topic' , $topic['is_locked'] ? ' faded' : '' , '" style="background-image: url(' . $settings['images_url'] . '/avatar.png);"></span>';
 
 		echo '
-			</div>';
-
-		if ($topic['is_sticky'])
-			echo '
-			<span class="icon-pin icon-notice floatright des"></span>';
-		if (isset($topic['is_redirect']) && $topic['is_redirect'])
-			echo '
-			<span class="icon-forward icon-notice floatright des"></span>';
-		if ($topic['is_poll'])
-			echo '
-			<span class="icon-chart icon-notice floatright des"></span>';
-
-		echo '
-			<div class="des floatright preview" style="text-align: right; margin: 0.5rem 0 0 2rem; width: 40%;"><b><a href="' . $topic['last_post']['href'] . '">' , $txt['last_post'] , '</b></a> ' , $txt['by'] , ' ' , $topic['last_post']['member']['link'] , '<br>' , $topic['last_post']['time'] , '</div>
-			<div class="title_bar" style="clear: left; float: left; ">
+			</div>
+			<div class="des floatright preview" style="text-align: right; margin: 0.5rem 0 0 2rem; width: 30%;"><b><a href="' . $topic['last_post']['href'] . '">' , $txt['last_post'] , '</b></a> ' , $txt['by'] , ' ' , $topic['last_post']['member']['link'] , '<br>' , $topic['last_post']['time'] , '</div>
+			<div class="title_bar" style="width: 65%; float: left; vertical-align: top; white-space: normal !important;">
 				<h4 class="titlebg">
 					' , $topic['first_post']['link'];
 		
@@ -154,13 +142,16 @@ function subtemplate_topiclist()
 		
 		if ($topic['is_sticky'])
 			echo '
-					<span class="icon-pin mob_inline icon-smaller"></span>';
+					<span class="icon-pin mob_inline icon-smaller"></span>
+					<span class="icon-pin icon-notice des"></span>';
 		if (isset($topic['is_redirect']) && $topic['is_redirect'])
 			echo '
-					<span class="icon-forward mob_inline icon-smaller"></span>';
+					<span class="icon-forward mob_inline icon-smaller"></span>
+					<span class="icon-forward icon-notice des"></span>';
 		if ($topic['is_poll'])
 			echo '
-					<span class="icon-chart mob_inline icon-smaller"></span>';
+					<span class="icon-chart mob_inline icon-smaller"></span>
+					<span class="icon-chart icon-notice des"></span>';
 		
 		echo '
 				</h4>
