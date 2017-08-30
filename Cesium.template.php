@@ -11,34 +11,24 @@ function subtemplate_boards($cat)
 	echo '
 	<div class="bwgrid f_boards">';	
 	
-	$count_boards = count($cat); $a=array();
-	if($count_boards>3 || $count_boards==3)
-		$a = array('33','4','12');
-	elseif($count_boards==2)
-		$a = array('8','3','13');
-	else
-		$a = array('16','2','14');
-	
 	foreach ($cat as $board)
 	{
 		echo '
-		<div class="bwcell'.$a[0].'" style="margin-bottom: 2rem;">
+		<div class="bwcell16" style="margin-bottom: 2rem;">
 			<div class="bwgrid" style="position: relative;">
-				<div class="bwcell'.$a[1].'">';
+				<div class="bwcell2">';
 
-		// possible for mods to exchange the icon, in that case: put the icon on top left corner
 		if(!isset($board['is_redirect']))
 			$board['is_redirect']=false;
 
-		// or just the icon
 		echo '
 					<a href="', ($board['is_redirect'] || $context['user']['is_guest'] ? $board['href'] : $scripturl . '?action=unread;board=' . $board['id'] . '.0;children'), '" ', !empty($board['board_tooltip']) ? ' title="' . $board['board_tooltip'] . '"' : '', '>
-						<img src="' . $settings['images_url'] . '/board_' , $board['board_class'] , '.png" class="boardicon" alt="" />
+						<span class="boardicon_' , $board['board_class'] , '"><span class="icon-user"></span></span>
 					</a>';
 
 		echo '
 				</div>
-				<div class="bwcell'.$a[2].' mobile_topmargin"><div class="bwgutter_right">
+				<div class="bwcell14 mobile_topmargin"><div class="bwgutter_right">
 					<h4 class="mobile_header"><a href="', $board['href'], '" id="b', $board['id'], '">', $board['name'], '</a></h4>
 					<p class="greytext des">', $board['description'], '</p>
 					<p class="greytext stats">
@@ -88,7 +78,8 @@ function subtemplate_topiclist()
 		
 		echo '
 	<div class="bwgrid">
-		<div class="bwcell2 des" style="position: relative;">';
+		<div class="bwcell2 des" style="position: relative;">
+			<span class="topicicon_off">';
 
 		if($topic['is_locked'])
 			echo '
@@ -108,6 +99,7 @@ function subtemplate_topiclist()
 			<span class="avatar_topic' , $topic['is_locked'] ? ' faded' : '' , '" style="background-image: url(' . $settings['images_url'] . '/avatar.png);"></span>';
 
 		echo '
+			</span>
 		</div>
 		<div class="bwcell14 mob_tag" style="position: relative;">
 			<div class="mob floatright" style="position: relative;">';
@@ -322,15 +314,15 @@ function subtemplate_single_post($message)
 		<a id="msg' . $message['id'] . '"></a>' . ($message['first_new'] ? '<a id="new"></a>' : '') : '', '
 		<div class="bwgrid">
 			<div class="bwcell3 des">
-				<div class="avatar_display_container">';
+				<div class="avatar_display_container">	';
 				
 	// Show online and offline buttons?
 	if (!$message['member']['is_guest'])
 		echo '
-					', $context['can_send_pm'] ? '<a href="' . $message['member']['online']['href'] . '" title="' . $message['member']['online']['label'] . '">' : '', '<span class="' . ($message['member']['online']['is_online'] == 1 ? 'member_on' : 'member_off') . '" title="' . $message['member']['online']['text'] . '"></span>', $context['can_send_pm'] ? '</a>' : '';
+					<div class="' . ($message['member']['online']['is_online'] == 1 ? 'member_on' : 'member_off') . '">';
 	else
 		echo '
-					<span class="member_invisible"></span>';
+					<div class="member_off">';
 
 	// Show the user's avatar.
 	if(substr($message['member']['avatar']['href'],strlen($message['member']['avatar']['href'])-12)== '/default.png' || empty($message['member']['avatar']['href']))
@@ -341,17 +333,19 @@ function subtemplate_single_post($message)
 					<a href="', $message['member']['href'], '" style="background-image: url(', $message['member']['avatar']['href'], ');" alt="" class="avatar_display" /></a>';
 
 	echo '
-				</div>';
-	// Show how many posts they have made.
-	if (!isset($context['disabled_fields']['posts']))
-		echo '
-				<div class="stats largetext centertext">', $message['member']['posts'], '</div>';
+					</div>
+				</div>
+				<h4 class="subject centertext">', $message['member']['link'], '</h4>';
 
 	// Show the member's primary group (like 'Administrator') if they have one.
 	if (!empty($message['member']['group']))
 		echo '
 				<div class="centertext">', $message['member']['group'], '</div>';
 
+	// Show how many posts they have made.
+	if (!isset($context['disabled_fields']['posts']))
+		echo '
+				<div class="stats largetext centertext">', $message['member']['posts'], '</div>';
 	echo '
 			</div>
 			<div class="bwcell13">
@@ -377,8 +371,8 @@ function subtemplate_single_post($message)
 
 	echo '
 						</div>
-						<div id="subject_', $message['id'], '" class="smalltext subjectsmall', (empty($modSettings['subject_toggle']) ? ' subject_hidden' : ''), '"><a class="greytext" href="', $message['href'], '" rel="nofollow">', $message['subject'], '</a></div>
-						<h4 class="subject">', $message['member']['link'], '</h4>
+						<div id="subject_', $message['id'], '" class="smalltext subjectsmall', (empty($modSettings['subject_toggle']) ? ' subject_hidden' : ''), '">
+						<a class="greytext" href="', $message['href'], '" rel="nofollow">', $message['subject'], '</a></div>
 						<div class="greytext desc">', $message['time'], '</div>
 					</div>';
 	if (!$message['approved'] && $message['member']['id'] != 0 && $message['member']['id'] == $context['user']['id'])
@@ -1838,7 +1832,35 @@ function ces_getboards($type)
 }
 
 
+function cesthemes($current_id)
+{
+	global $context, $txt, $smcFunc, $settings;
 
+	// check updates
+	if($context['user']['is_admin'])
+	{
+		// check if other blocthemes exists
+		$request = $smcFunc['db_query']('substring', '
+			SELECT
+				t.id_theme, t.variable,tn.value as name
+			FROM {db_prefix}themes AS t
+				LEFT JOIN {db_prefix}themes AS tn ON (tn.id_theme = t.id_theme && tn.variable="name")
+			WHERE t.id_member = 0
+				AND t.id_theme != ' . $current_id . '
+				AND t.variable IN("use_' .(implode('","use_', $settings['ces_boardtypes'])). '")
+				');
+		
+		$a = array();
+		if($smcFunc['db_num_rows']($request)>0) 
+		{	
+			while($row = $smcFunc['db_fetch_assoc']($request))
+				$a[$row['id_theme']] = $row['name'];
+
+			$smcFunc['db_free_result']($request);
+		}
+	}
+	return $a;
+}
 
 
 

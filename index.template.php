@@ -14,12 +14,12 @@ function template_init()
 	$settings['avatars_on_indexes'] = true;
 	$settings['avatars_on_boardIndex'] = true;
 	$settings['page_index'] = array(
-		'extra_before' => '<b class="page_text">'.$txt['pages'].'</b>',
-		'previous_page' => '<span class="icon-arrow-left"></span>',
+		'extra_before' => '<span class="current">'.$txt['pages'].'</span>',
+		'previous_page' => '<span class="icon-arrow-left current"></span>',
 		'current_page' => '<span class="current">%1$d</span>',
 		'page' => '<a href="{URL}">%2$s</a>',
 		'expand_pages' => '<span class="expand_pages" style="cursor: pointer;" onclick="expandPages(this, {LINK}, {FIRST_PAGE}, {LAST_PAGE}, {PER_PAGE});">...</span>',
-		'next_page' => '<span class="icon-arrow-right"></span>',
+		'next_page' => '<span class="icon-arrow-right current"></span>',
 		'extra_after' => '',
 	);
 	$settings['themecopyright'] = '<a href="https://www.bjornhkristiansen.com/smf21/"><b>Lithium</b> theme by Bloc &copy; 2017</a>';
@@ -34,7 +34,7 @@ function template_init()
 	loadtemplate('Cesium');
 
 	$settings['ces_bbc_codes'] = array('ingress','slogan','status','tag','version','doclink','gallerylink','filelink','function','solution','endversion');
-	$settings['ces_boardtypes'] = array('blogs','galleries','files','news','bugs','docs');
+	$settings['ces_boardtypes'] = array('blogs','galleries','files','news','bugs','docs','copys');
 	
 	// using the pages feature?
 	if(!empty($_GET['action']) && in_array($_GET['action'],$settings['ces_boardtypes']))
@@ -196,7 +196,7 @@ function template_body_above()
 			</div>';
 	
 	// if blog/gallery etc. features are selected, add to the menu
-	$context['mob_boardtypes'] = array(); $exists = false;
+	$context['mob_boardtypes'] = array(); $context['ces_exists'] = false;
 	foreach($settings['ces_boardtypes'] as $g)
 	{
 		if(!empty($settings['use_'.$g]))
@@ -208,10 +208,10 @@ function template_body_above()
 				'href' => $scripturl. '?action='.$g,
 				'icon' => '',
 			);
-			$exists = true;
+			$context['ces_exists'] = true;
 		}
 	}	
-	if($exists)
+	if($context['ces_exists'])
 	{
 		echo '
 			<div class="bot_menu_mobile" id="bmmenu">
@@ -259,7 +259,7 @@ function template_body_above()
 			<ul class="nolist" id="mmenu_bot">
 				<li onclick="fPop_slide(\'#mmenu\'); return false;"><span class="icon-menu"></span></li>';
 
-	if($exists)
+	if($context['ces_exists'])
 		echo '
 				<li onclick="fPop_slide(\'#bmmenu\'); return false;"><span class="icon-menu"></span><span class="amt smaller">B</span></li>';
 
@@ -306,7 +306,7 @@ function template_body_above()
 		{
 			echo '
 						<li>
-							<a href="', $scripturl, '?action=pm"', !empty($context['self_pm']) ? ' class="active"' : '', '><span class="icon-bubble"></span>
+							<a href="', $scripturl, '?action=pm"', !empty($context['self_pm']) ? ' class="active"' : '', '>' , $txt['messages'] , '
 								', !empty($context['user']['unread_messages']) ? ' <span class="amt">' . $context['user']['unread_messages'] . '</span>' : '', '
 							</a>
 							<ul class="des">
@@ -320,7 +320,7 @@ function template_body_above()
 		echo '
 						<li>
 							<a href="', $scripturl, '?action=profile;area=showalerts;u=', $context['user']['id'], '"', !empty($context['self_alerts']) ? ' class="active"' : '', '>
-								<span class="icon-notification"></span>', !empty($context['user']['alerts']) ? ' <span class="amt">' . $context['user']['alerts'] . '</span>' : '', '
+								' , $txt['alerts'] , ' ', !empty($context['user']['alerts']) ? ' <span class="amt">' . $context['user']['alerts'] . '</span>' : '', '
 							</a>
 						</li>';
 
@@ -358,12 +358,12 @@ function template_body_above()
 	}
 					
 	echo '		<div style="oveflow: hidden;">
-					<h1 class="floatleft">
+					<h1 >
 						<a id="top" href="', $scripturl, '">', empty($context['header_logo_url_html_safe']) ? $context['forum_name_html_safe'] : '<img style="max-width: 100%;" src="' . $context['header_logo_url_html_safe'] . '" alt="' . $context['forum_name_html_safe'] . '">', '</a>
 					</h1>';
 	if (!empty($settings['enable_news']) && !empty($context['random_news_line']))
 		echo '
-					<div id="fnews" class="floatleft">
+					<div id="fnews">
 						<strong>', $txt['news'], ': </strong>', $context['random_news_line'], '
 					</div>';
 
@@ -405,17 +405,11 @@ function template_body_above()
 
 	
 	echo '
-				</div>';
-	
-	if(function_exists('subtemplate_aside') || function_exists('subtemplate_aside_twin'))
-		echo '
+				</div>
+
 					<div class="bwgrid" id="faside_back">
 						<div class="bwcell12">
 							<div id="fcontent">';
-	else
-		echo '
-					<div id="fcontent">';
-
 }
 
 /**
@@ -425,11 +419,11 @@ function template_body_below()
 {
 	global $context, $txt, $scripturl, $settings;
 
-	if(function_exists('subtemplate_aside') || function_exists('subtemplate_aside_twin'))
-		echo '
+	echo '
 						</div>
 					</div>
 					<div class="bwcell4">
+						<div id="lith_menu" class="des">', template_menu($context['ces_exists']) ,'</div>
 						<div id="faside">
 							' , 	function_exists('subtemplate_aside_twin') ? subtemplate_aside_twin() : '' , '
 							' , 	function_exists('subtemplate_aside') && !function_exists('subtemplate_aside_twin') ? subtemplate_aside() : '' , '
@@ -437,10 +431,6 @@ function template_body_below()
 					</div>
 				</div>
 				<div id="fbottom">';
-	else
-		echo '
-				</div>
-				<div id="fbottom">';	
 	
 	theme_copyright();
 

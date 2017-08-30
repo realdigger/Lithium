@@ -486,7 +486,7 @@ function template_set_options()
  */
 function template_set_settings()
 {
-	global $context, $settings, $scripturl, $txt;
+	global $context, $settings, $scripturl, $txt, $smcFunc;
 
 	// check updates
 	if($context['user']['is_admin'])
@@ -494,17 +494,25 @@ function template_set_settings()
 		if (($settings['cesium_updates'] = cache_get_data('cesium_updates', 86400)) == null)
 		{
 			// get the update through xml
-			$what = file_get_contents("https://www.bjornhkristiansen.com/smf21/xml/cesium.xml");
-			$settings['cesium_updates'] = simplexml_load_string($what);
-			cache_put_data('cesium_updates', $settings['cesium_updates'], 86400);
+			$what = file_get_contents("https://www.bjornhkristiansen.com/smf21/xml/lithium.xml");
+			$settings['lithium_updates'] = simplexml_load_string($what);
+			cache_put_data('lithium_updates', $settings['lithium_updates'], 86400);
 		}
-		if($settings['cesium_updates']->version > $settings['internal_revision'])
+		if($settings['lithium_updates']->version > $settings['internal_revision'])
 			echo '
 					<div class="noticebox">
 						<h3>Update available for the theme</h3>
-						<b>',$settings['cesium_updates']->subject,'</b> - ' , $settings['cesium_updates']->body , '
-						<div class="single_action" style="margin-top: 1rem;"><a href="' , $settings['cesium_updates']->url , '">Get it here</a></div>
+						<div class="single_action floatright" style="margin: 1rem 0 0 1rem;"><a href="' , $settings['lithium_updates']->url , '">Visit</a></div>
+						<b>',$settings['lithium_updates']->subject,'</b><br>' , $settings['lithium_updates']->body , '
 					</div>';
+
+		$a = cesthemes($settings['theme_id']);
+		if(count($a)>0)
+			echo '
+		<div class="information">
+			<span class="icon-settings icon-bigger" style="vertical-align: -10%; margin-right: 1rem;"></span>
+			<a href="' , $scripturl , '?action=copys"><b>Do you want to copy the bloctheme settings from "' , implode('" or "',$a) , '"?</a>
+		</div>';
 	}
 
 	echo '
@@ -665,6 +673,22 @@ function template_set_settings()
 						<input type="checkbox" name="', !empty($setting['default']) ? 'default_' : '', 'options[', $setting['id'], ']" id="', $setting['id'], '"', !empty($setting['value']) ? ' checked' : '', ' value="1" class="input_check"' , !empty($setting['switch']) ? ' onclick="fPop_showImage(\'.' . $setting['switch'] . '\'); "' : '' , '>
 					</dd>';
 			
+		}
+		// cesthemes
+		elseif ($setting['type'] == 'cesthemes')
+		{
+			echo '
+					<dd' , !empty($setting['container']) ? ' class="' . $setting['container'] . '" ' . (empty($settings[$setting['container']]) ? 'style="display: none;"': '') : '' , '>
+						<select name="', !empty($setting['default']) ? 'default_' : '', 'options[', $setting['id'], ']" id="', $setting['id'], '">';
+
+			$a = cesthemes();
+			foreach ($a as $value => $label)
+				echo '
+							<option value="', $value, '">', $label, '</option>';
+
+			echo '
+						</select>
+					</dd>';
 		}
 		// A list with options?
 		elseif ($setting['type'] == 'list')
@@ -1357,5 +1381,6 @@ function template_edit_file()
 		</form>
 	</div>';
 }
+
 
 ?>

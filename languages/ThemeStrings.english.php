@@ -136,4 +136,7 @@ $txt['ces_text'] = 'Text';
 $txt['ces_time'] = 'Time';
 $txt['ces_actions'] = 'Actions';
 
+ $txt['ces_copys'] = 'Copy the current theme settings(for blocthemes) to this theme, from:';
+ $txt['ces_send'] = 'Copy over';
+
 ?>
