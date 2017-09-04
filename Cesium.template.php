@@ -1862,6 +1862,4 @@ function cesthemes($current_id)
 	return $a;
 }
 
-
-
 ?>

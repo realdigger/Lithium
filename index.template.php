@@ -8,7 +8,7 @@ function template_init()
 	global $settings, $txt, $modSettings;
 
 	$settings['theme_version'] = '2.1';
-	$settings['internal_revision'] = '1';
+	$settings['internal_revision'] = '2';
 	$settings['use_buttons'] = true;
 	$settings['require_theme_strings'] = true;
 	$settings['avatars_on_indexes'] = true;
@@ -39,9 +39,11 @@ function template_init()
 	// using the pages feature?
 	if(!empty($_GET['action']) && in_array($_GET['action'],$settings['ces_boardtypes']))
 	{	
+		$settings['ces_run_safe'] = true;
 		$settings['ces_run'] = 'ces_'.$_GET['action'];
 		loadtemplate('Ces'.$_GET['action']);
 	}
+
 	// load the bbc tag
 	add_integration_function('integrate_bbc_codes', 'ces_addbbc', false);
 	//add_integration_function('integrate_bbc_buttons', 'ces_bbcbuttons', false);
@@ -79,8 +81,18 @@ function template_pages_above()
 {
 	global $settings;
 
-	if(function_exists($settings['ces_run']))
+	if(!empty($settings['ces_run']) && function_exists($settings['ces_run']))
 		$settings['ces_run']();
+	if(!function_exists('template_main'))
+	{
+		function template_main()
+		{
+			global $settings, $scripturl; 
+			
+			echo '
+			<a href="' , $scripturl , '"><img src="' , $settings['images_url'] , '/404.png" style="margin: 2rem 0; width: 100%;" alt="404" /></a>';
+		}
+	}
 }
 
 function template_pages_below()
